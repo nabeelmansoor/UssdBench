@@ -1,26 +1,6 @@
 "use client"
 
-import { lineDirection, stripDirectionMarks } from "@/lib/text"
-import { displayColumns, walkWidth, wrapUnits, type WidthUnit } from "@/lib/width"
-
-function coalesce(row: WidthUnit[]): WidthUnit[] {
-  const visible: WidthUnit[] = []
-  let leading = ""
-  for (const unit of row) {
-    if (unit.cols === 0) {
-      if (visible.length === 0) leading += unit.text
-      else visible[visible.length - 1] = { ...visible[visible.length - 1]!, text: visible[visible.length - 1]!.text + unit.text }
-      continue
-    }
-    visible.push({ ...unit, text: leading + unit.text })
-    leading = ""
-  }
-  if (leading && visible.length > 0) {
-    const last = visible[visible.length - 1]!
-    visible[visible.length - 1] = { ...last, text: last.text + leading }
-  }
-  return visible
-}
+import { layoutPhoneLine } from "@/lib/bidi"
 
 export function PhonePreview({
   lines,
@@ -34,11 +14,8 @@ export function PhonePreview({
   empty: boolean
 }) {
   const wrapped = lines.map((line) => {
-    const direction = lineDirection(line)
-    const shown = stripDirectionMarks(line)
-    const columns = displayColumns(shown)
-    const rows = shown.length === 0 ? [] : wrapUnits(walkWidth(shown), width).map(coalesce)
-    return { direction, columns, rows, blank: shown.length === 0 }
+    const layout = layoutPhoneLine(line, width)
+    return { ...layout, blank: layout.rows.length === 0 }
   })
   const wideLines = wrapped.flatMap((line, index) => (line.columns > width ? [index + 1] : []))
 
@@ -55,31 +32,35 @@ export function PhonePreview({
               The screen stays blank until there is text.
             </p>
           ) : (
-            <div className="font-mono text-[0.72rem] leading-snug sm:text-xs" style={{ width: `${width}ch` }}>
+            <div
+              dir="ltr"
+              className="font-mono text-[0.72rem] leading-snug sm:text-xs"
+              style={{ width: `${width}ch` }}
+            >
               {wrapped.map((line, index) =>
                 line.blank ? (
                   <div key={index} className="h-[1.35em]" />
                 ) : (
-                  <div key={index} dir={line.direction === "rtl" ? "rtl" : "ltr"}>
-                    {line.rows.map((row, rowIndex) => (
-                      <div
-                        key={rowIndex}
-                        className="grid"
-                        style={{ gridTemplateColumns: `repeat(${width}, 1ch)` }}
-                      >
-                        {row.map((unit, unitIndex) => (
-                          <span
-                            key={unitIndex}
-                            style={{ gridColumn: `span ${Math.max(1, unit.cols)}` }}
-                            className={unit.emoji ? "text-[#f3d48a] underline decoration-wavy decoration-[#f3d48a]" : undefined}
-                            title={unit.emoji ? "Unsafe on a USSD handset. Wider than one GSM character." : undefined}
-                          >
-                            {unit.text}
-                          </span>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
+                  line.rows.map((row, rowIndex) => (
+                    <div
+                      key={`${index}-${rowIndex}`}
+                      className="grid"
+                      dir="ltr"
+                      style={{ gridTemplateColumns: `repeat(${width}, 1ch)` }}
+                    >
+                      {row.map((unit, unitIndex) => (
+                        <span
+                          key={unitIndex}
+                          dir="ltr"
+                          style={{ gridColumn: `${unit.column + 1} / span ${Math.max(1, unit.cols)}` }}
+                          className={unit.emoji ? "text-[#f3d48a] underline decoration-wavy decoration-[#f3d48a]" : undefined}
+                          title={unit.emoji ? "Unsafe on a USSD handset. Wider than one GSM character." : undefined}
+                        >
+                          {unit.text}
+                        </span>
+                      ))}
+                    </div>
+                  ))
                 ),
               )}
             </div>
