@@ -29,7 +29,7 @@ export function CleanupActions() {
           type="button"
           className={actionButtonClass}
           disabled={spaces.replacements === 0}
-          onClick={() => update({ text: spaces.text })}
+          onClick={() => update((current) => ({ text: cleanupText(current.text, SPACES_AND_INVISIBLES).text }))}
         >
           Replace spaces and safe invisibles
         </Button>
@@ -38,7 +38,9 @@ export function CleanupActions() {
           variant="outline"
           className={actionButtonClass}
           disabled={punctuation.replacements === 0}
-          onClick={() => update({ text: punctuation.text })}
+          onClick={() =>
+            update((current) => ({ text: cleanupText(current.text, SPACES_INVISIBLES_AND_PUNCTUATION).text }))
+          }
         >
           Replace spaces, invisibles, and smart punctuation
         </Button>
@@ -47,7 +49,7 @@ export function CleanupActions() {
           variant="outline"
           className={actionButtonClass}
           disabled={fullwidth.replacements === 0}
-          onClick={() => update({ text: fullwidth.text })}
+          onClick={() => update((current) => ({ text: cleanupText(current.text, FULLWIDTH_ONLY).text }))}
         >
           Fold fullwidth lookalikes
         </Button>

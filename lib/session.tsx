@@ -77,10 +77,12 @@ function sanitize(raw: unknown): SessionState {
   }
 }
 
+type SessionPatch = Partial<SessionState> | ((current: SessionState) => Partial<SessionState>)
+
 type SessionContextValue = {
   state: SessionState
   ready: boolean
-  update: (patch: Partial<SessionState>) => void
+  update: (patch: SessionPatch) => void
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
@@ -114,16 +116,17 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
   }, [ready, state])
 
-  const update = (patch: Partial<SessionState>) => {
+  const update = (patch: SessionPatch) => {
     setState((current) => {
-      const next: SessionState = { ...current, ...patch }
-      if (patch.text !== undefined) next.text = normalizeText(patch.text)
-      if (patch.budgetOctets !== undefined) {
-        const budget = Math.round(patch.budgetOctets)
+      const resolved = typeof patch === "function" ? patch(current) : patch
+      const next: SessionState = { ...current, ...resolved }
+      if (resolved.text !== undefined) next.text = normalizeText(resolved.text)
+      if (resolved.budgetOctets !== undefined) {
+        const budget = Math.round(resolved.budgetOctets)
         next.budgetOctets = Number.isFinite(budget) ? Math.min(2000, Math.max(1, budget)) : current.budgetOctets
       }
-      if (patch.widthRange === "feature" && patch.width === undefined) next.width = 16
-      if (patch.widthRange === "smartphone" && patch.width === undefined) next.width = 30
+      if (resolved.widthRange === "feature" && resolved.width === undefined) next.width = 16
+      if (resolved.widthRange === "smartphone" && resolved.width === undefined) next.width = 30
       const min = next.widthRange === "smartphone" ? 30 : 16
       const max = next.widthRange === "smartphone" ? 48 : 24
       next.width = Math.min(max, Math.max(min, Math.round(next.width)))

@@ -107,7 +107,7 @@ export function AlignTool() {
                       variant={line.direction === "rtl" ? "default" : "outline"}
                       className="h-10 w-full sm:w-auto"
                       aria-pressed={line.direction === "rtl"}
-                      onClick={() => update({ text: setLineDirection(state.text, index, "rtl") })}
+                      onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "rtl") }))}
                     >
                       Right to left
                     </Button>
@@ -116,7 +116,7 @@ export function AlignTool() {
                       variant={line.direction === "ltr" ? "default" : "outline"}
                       className="h-10 w-full sm:w-auto"
                       aria-pressed={line.direction === "ltr"}
-                      onClick={() => update({ text: setLineDirection(state.text, index, "ltr") })}
+                      onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "ltr") }))}
                     >
                       Left to right
                     </Button>
@@ -125,7 +125,7 @@ export function AlignTool() {
                       variant="outline"
                       className="h-10 w-full sm:w-auto"
                       disabled={line.direction === null}
-                      onClick={() => update({ text: setLineDirection(state.text, index, "clear") })}
+                      onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "clear") }))}
                     >
                       Clear direction
                     </Button>
@@ -136,7 +136,13 @@ export function AlignTool() {
                 <Button
                   type="button"
                   className={actionButtonClass}
-                  onClick={() => update({ text: lines.map((line) => line.text).join("\n") })}
+                  onClick={() =>
+                    update((current) => ({
+                      text: alignText(current.text, current.width, current.alignMode)
+                        .map((line) => line.text)
+                        .join("\n"),
+                    }))
+                  }
                 >
                   Write padding into the text
                 </Button>
