@@ -12,10 +12,10 @@ export function WidthControl({ showAmbiguous = false }: { showAmbiguous?: boolea
 
   return (
     <div className="grid gap-3">
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="segmented">
         <Button
           type="button"
-          className="h-11 w-full sm:w-auto"
+          className="h-11 px-3"
           variant={state.widthRange === "feature" ? "default" : "outline"}
           aria-pressed={state.widthRange === "feature"}
           onClick={() => choose("feature")}
@@ -24,7 +24,7 @@ export function WidthControl({ showAmbiguous = false }: { showAmbiguous?: boolea
         </Button>
         <Button
           type="button"
-          className="h-11 w-full sm:w-auto"
+          className="h-11 px-3"
           variant={state.widthRange === "smartphone" ? "default" : "outline"}
           aria-pressed={state.widthRange === "smartphone"}
           onClick={() => choose("smartphone")}
@@ -35,7 +35,7 @@ export function WidthControl({ showAmbiguous = false }: { showAmbiguous?: boolea
       <label className="grid gap-2 text-sm">
         <span className="flex items-baseline justify-between gap-3">
           <span className="font-medium">Columns</span>
-          <span className="font-mono text-base">{state.width}</span>
+          <span className="font-mono text-lg font-bold">{state.width}</span>
         </span>
         <input
           type="range"
@@ -47,7 +47,7 @@ export function WidthControl({ showAmbiguous = false }: { showAmbiguous?: boolea
           aria-valuenow={state.width}
           aria-valuetext={`${state.width} columns`}
           onChange={(event) => update({ width: Number(event.target.value) })}
-          className="w-full accent-primary"
+          className="h-6 w-full accent-primary"
         />
         <span className="flex justify-between font-mono text-xs text-muted-foreground">
           <span>{min}</span>

@@ -1,6 +1,8 @@
 export const TOOLS = [
   {
     href: "/ussd/paginate",
+    key: "1",
+    group: "USSD",
     label: "Paginate",
     title: "Paginate",
     description: "Split one screen into pages that fit the octet budget, with Next and Back or without them.",
@@ -8,6 +10,8 @@ export const TOOLS = [
   },
   {
     href: "/ussd/align",
+    key: "2",
+    group: "USSD",
     label: "Align",
     title: "Align",
     description: "Set a feature-phone or smartphone width, pad lines, and force a line right to left or left to right.",
@@ -15,6 +19,8 @@ export const TOOLS = [
   },
   {
     href: "/ussd/characters",
+    key: "3",
+    group: "USSD",
     label: "Characters",
     title: "Characters",
     description: "Find the no-break space, curly quote, or direction mark that a paste hid.",
@@ -22,6 +28,8 @@ export const TOOLS = [
   },
   {
     href: "/sms",
+    key: "4",
+    group: "SMS",
     label: "SMS",
     title: "SMS",
     description: "See GSM 7-bit or UCS-2, count septets, and mark where each segment ends.",

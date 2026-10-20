@@ -8,7 +8,7 @@ import { ToolWorkLayout } from "@/components/tool-work-layout"
 import { CopyButton } from "@/components/copy-button"
 import { CounterStrip } from "@/components/counter-strip"
 import { PhonePreview } from "@/components/phone-preview"
-import { Callout, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
+import { Callout, Panel, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
 import { WidthControl } from "@/components/width-control"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +18,6 @@ import { formatCodePoint } from "@/lib/names"
 import { composeReply, isReplyKey } from "@/lib/text"
 import { copyPage, copyPages, paginate, type PageModel } from "@/lib/paginate"
 import { useSession } from "@/lib/session"
-import { cn } from "cn"
 
 function visibleLine(line: string): string {
   const shown = line.replaceAll("\u202A", "[LRE]").replaceAll("\u202B", "[RLE]").replaceAll("\u202C", "[PDF]")
@@ -151,11 +150,13 @@ export function PaginateTool() {
         main={
           <>
         <CounterStrip />
-        <BufferEditor id="paginate-text" />
-        <div className="grid gap-4 rounded-xl border border-border bg-card p-4">
-          <div className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:items-end">
+        <Panel title="Menu text" note="Buffer">
+          <BufferEditor id="paginate-text" />
+        </Panel>
+        <Panel title="Page size limit">
+          <div className="grid gap-4 sm:grid-cols-[9rem_1fr] sm:items-end">
             <div className="grid gap-1.5">
-              <Label htmlFor="budget">Page size limit</Label>
+              <Label htmlFor="budget" className="font-semibold">Page size limit</Label>
               <Input
                 id="budget"
                 type="number"
@@ -192,10 +193,10 @@ export function PaginateTool() {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="segmented">
             <Button
               type="button"
-              className="h-11 w-full sm:w-auto"
+              className="h-11"
               variant={state.withLinks ? "default" : "outline"}
               aria-pressed={state.withLinks}
               onClick={() => update({ withLinks: true })}
@@ -204,7 +205,7 @@ export function PaginateTool() {
             </Button>
             <Button
               type="button"
-              className="h-11 w-full sm:w-auto"
+              className="h-11"
               variant={state.withLinks ? "outline" : "default"}
               aria-pressed={!state.withLinks}
               onClick={() => update({ withLinks: false })}
@@ -237,10 +238,10 @@ export function PaginateTool() {
                 onLabel={(value) => update({ backLabel: value })}
               />
               {keysOk && state.nextKey === state.backKey ? (
-                <p className="text-sm text-destructive">Next and Back use the same reply key.</p>
+                <p className="text-sm font-medium text-destructive">Next and Back use the same reply key.</p>
               ) : null}
               {!keysOk ? (
-                <p className="text-sm text-destructive">
+                <p className="text-sm font-medium text-destructive">
                   Next and Back stay off until both reply keys are digits, #, or *.
                 </p>
               ) : null}
@@ -251,13 +252,14 @@ export function PaginateTool() {
               those lines would have used.
             </p>
           )}
-          <fieldset className="grid gap-2">
-            <legend className="text-sm font-medium">Line break in copied pages</legend>
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+          <fieldset className="grid gap-2 border-t border-border pt-4">
+            <legend className="mb-1 px-0 text-sm font-semibold">Line break in copied pages</legend>
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-5">
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="radio"
                   name="line-break"
+                  className="size-4 accent-primary"
                   checked={state.lineBreak === "lf"}
                   onChange={() => update({ lineBreak: "lf" })}
                 />
@@ -267,6 +269,7 @@ export function PaginateTool() {
                 <input
                   type="radio"
                   name="line-break"
+                  className="size-4 accent-primary"
                   checked={state.lineBreak === "cr"}
                   onChange={() => update({ lineBreak: "cr" })}
                 />
@@ -274,40 +277,33 @@ export function PaginateTool() {
               </label>
             </div>
           </fieldset>
-        </div>
+        </Panel>
+        <Panel title="Phone width">
+          <WidthControl />
+        </Panel>
         <CollapsiblePanel title="How pagination works">
           <PaginationHelp />
         </CollapsiblePanel>
           {state.text.length === 0 ? (
             <p className="text-sm leading-6 text-muted-foreground">Paste a menu, or load the sample, to build pages.</p>
           ) : (
-            <div className="grid gap-4 lg:hidden">
-              <p className="text-sm font-medium text-primary">Phone preview</p>
-              <div ref={phoneRef}>
-                <WidthControl />
-                <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
-              </div>
+            <div ref={phoneRef} className="grid gap-3 lg:hidden">
+              <p className="kicker">Phone preview</p>
+              <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
             </div>
           )}
           {state.text.length === 0 ? null : (
-            <div className="grid gap-4">
+            <div className="grid gap-5">
               {pages.map((page, pageIndex) => {
                 const warning = ucs2Copy(page, state.budgetOctets)
                 const active = pageIndex === index
                 return (
-                  <article
+                  <Panel
                     key={pageIndex}
-                    className={cn(
-                      "grid gap-3 rounded-xl border bg-card p-4",
-                      active ? "border-primary" : "border-border",
-                    )}
+                    active={active}
+                    title={page.overflow ? `Page ${pageIndex + 1} does not fit` : `Page ${pageIndex + 1}`}
+                    note={<span className="font-mono text-xs">{pageStats(page)}</span>}
                   >
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h2 className="text-base font-semibold">
-                        {page.overflow ? `Page ${pageIndex + 1} does not fit` : `Page ${pageIndex + 1}`}
-                      </h2>
-                      <p className="font-mono text-xs text-muted-foreground">{pageStats(page)}</p>
-                    </div>
                     {page.overflow ? <Callout tone="danger">{overflowCopy(page)}</Callout> : null}
                     {warning ? (
                       <Callout tone="warning">
@@ -329,7 +325,7 @@ export function PaginateTool() {
                         only.
                       </Callout>
                     ))}
-                    <pre className="overflow-x-auto rounded-lg bg-muted p-3 font-mono text-sm leading-6 whitespace-pre-wrap">
+                    <pre className="overflow-x-auto rounded-md border border-border bg-muted p-3 font-mono text-sm leading-6 whitespace-pre-wrap">
                       {page.text}
                     </pre>
                     <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -352,7 +348,7 @@ export function PaginateTool() {
                         disabled={page.overflow !== null}
                       />
                     </div>
-                  </article>
+                  </Panel>
                 )
               })}
               <CopyButton text={copyPages(pages, state.lineBreak)} label="Copy all pages" />
@@ -366,12 +362,9 @@ export function PaginateTool() {
         }
         aside={
           state.text.length > 0 ? (
-            <>
-              <WidthControl />
-              <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
-            </>
+            <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
           ) : (
-            <p className="text-sm leading-6 text-muted-foreground">
+            <p className="rounded-md border border-dashed border-line p-4 text-sm leading-6 text-muted-foreground">
               Paste a menu to see the phone preview here while you work through pages.
             </p>
           )
@@ -406,8 +399,8 @@ function ReplyFields({
   const sepId = `${legend}-sep`
   const labelId = `${legend}-label`
   return (
-    <fieldset className="grid gap-2">
-      <legend className="text-sm font-medium">{legend}</legend>
+    <fieldset className="grid gap-2 border-t border-border pt-4">
+      <legend className="mb-1 px-0 text-sm font-semibold">{legend}</legend>
       <div className="grid gap-2 sm:grid-cols-3">
         <div className="grid gap-1.5">
           <Label htmlFor={keyId}>Reply key</Label>
@@ -428,7 +421,7 @@ function ReplyFields({
           <Input id={labelId} value={label} onChange={(event) => onLabel(event.target.value)} className="h-10 font-mono" />
         </div>
       </div>
-      <p className="font-mono text-sm">
+      <p className="rounded-md bg-muted px-3 py-1.5 font-mono text-sm">
         Line: {composed}
         {valid ? "" : " · use digits, #, or *"}
       </p>

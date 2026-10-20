@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { BottomNav, MobileTopBar, Sidebar } from "@/components/nav";
 import { Footer } from "@/components/site-footer";
-import { Header } from "@/components/site-header";
 import { SessionProvider } from "@/lib/session";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const display = Bricolage_Grotesque({
+  variable: "--font-display",
+  subsets: ["latin"],
+  axes: ["opsz"],
+});
+
+const body = Instrument_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const code = JetBrains_Mono({
+  variable: "--font-code",
   subsets: ["latin"],
 });
 
@@ -28,14 +34,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${code.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
+      <body className="min-h-full bg-background text-foreground">
         <SessionProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <div className="lg:flex lg:min-h-screen">
+            <Sidebar />
+            <div className="app-dots relative isolate flex min-h-screen min-w-0 flex-1 flex-col pb-16 lg:pb-0">
+              <MobileTopBar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </div>
+          <BottomNav />
         </SessionProvider>
       </body>
     </html>
