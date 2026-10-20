@@ -2,16 +2,16 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <nav className="flex flex-wrap gap-x-4 gap-y-2" aria-label="About this site">
-          <Link href="/about" className="underline-offset-4 hover:underline">
+    <footer className="mt-auto border-t border-border bg-muted/40">
+      <div className="page-shell flex flex-col gap-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between">
+        <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="About this site">
+          <Link href="/about" className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
             About
           </Link>
-          <Link href="/privacy" className="underline-offset-4 hover:underline">
+          <Link href="/privacy" className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
             Privacy
           </Link>
-          <Link href="/contact" className="underline-offset-4 hover:underline">
+          <Link href="/contact" className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
             Contact
           </Link>
         </nav>

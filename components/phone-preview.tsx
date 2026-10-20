@@ -20,8 +20,8 @@ export function PhonePreview({
   const wideLines = wrapped.flatMap((line, index) => (line.columns > width ? [index + 1] : []))
 
   return (
-    <figure className="w-full max-w-full">
-      <div className="mx-auto w-fit max-w-full rounded-[1.75rem] bg-[#1b1a17] p-3 shadow-md dark:bg-black">
+    <figure className="w-full max-w-full origin-top scale-[0.92] sm:scale-100">
+      <div className="mx-auto w-fit max-w-full rounded-[1.75rem] bg-[#121820] p-3 shadow-lg ring-1 ring-black/20 dark:bg-[#0a0e14]">
         <div className="mx-auto mb-2 h-1.5 w-12 rounded-full bg-white/20" aria-hidden="true" />
         <div
           className="max-w-full overflow-x-auto rounded-xl bg-[#102418] px-3 py-3 text-[#d7f5d4]"
