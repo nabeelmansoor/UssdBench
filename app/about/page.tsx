@@ -3,14 +3,14 @@ import { PolicyArticle } from "@/components/tool-frame";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Who the USSD and SMS text formatter is for, and what version 1 does not do.",
+  description: "Who USSD Bench is for, and what version 1 does not do.",
 };
 
 export default function AboutPage() {
   return (
     <PolicyArticle
       title="About"
-      lede="A formatter for people who already have a gateway and one screen in progress."
+      lede="USSD Bench is for people who already have a gateway and one screen in progress."
     >
       <p>
         USSD menu authors jump between one site to split a long screen, another to count characters, and a third to

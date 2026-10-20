@@ -18,8 +18,8 @@ export function Header() {
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex w-full max-w-3xl items-center gap-3 px-4 py-3">
         <Link href="/" className="mr-auto grid leading-tight">
-          <span className="font-semibold tracking-tight">USSD & SMS</span>
-          <span className="text-xs text-muted-foreground">Text formatter</span>
+          <span className="font-semibold tracking-tight">USSD Bench</span>
+          <span className="text-xs text-muted-foreground">Menus and SMS segments</span>
         </Link>
         <nav className="hidden items-center gap-1 sm:flex" aria-label="Tools">
           {TOOLS.map((tool) => {
