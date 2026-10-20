@@ -13,7 +13,7 @@ export default function PrivacyPage() {
       lede="The menu text stays in the browser. Version 1 does not upload it."
     >
       <p>
-        Everything the formatter does runs on your device. The pasted menu, the page budget, the column width, the Next
+        Everything USSD Bench does runs on your device. The pasted menu, the page budget, the column width, the Next
         and Back fields, and the light or dark theme are kept in this browser tab for the visit. Reloading the page
         keeps them. Closing the tab clears them. They are not sent to a server, and there is no account to attach them
         to.

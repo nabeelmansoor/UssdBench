@@ -3,7 +3,7 @@ import { PolicyArticle } from "@/components/tool-frame";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "How to reach the owner of the USSD and SMS text formatter.",
+  description: "How to reach the owner of USSD Bench.",
 };
 
 export default function ContactPage() {
@@ -21,7 +21,7 @@ export default function ContactPage() {
         should have stayed in one piece.
       </p>
       <p>
-        The formatter itself does not send the menu. Leave live customer text out of the email. Version 1 has no
+        USSD Bench does not send the menu. Leave live customer text out of the email. Version 1 has no
         message form, because a form would mean a server, and this version does not upload the menu.
       </p>
     </PolicyArticle>

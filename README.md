@@ -1,6 +1,6 @@
-# USSD and SMS text formatter
+# USSD Bench
 
-A browser tool for one USSD screen at a time. Paste a menu, fit it to an octet budget, clean characters that break a gateway, align it to a phone width, and count SMS segments. The menu text stays in the browser. It is not uploaded.
+USSD Bench is a browser tool for one USSD screen at a time. Paste a menu, fit it to an octet budget, clean characters that break a gateway, align it to a phone width, and count SMS segments. The menu text stays in the browser. It is not uploaded.
 
 Version 1 includes:
 

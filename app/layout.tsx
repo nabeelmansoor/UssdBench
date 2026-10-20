@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "USSD and SMS text formatter",
-    template: "%s · USSD and SMS text formatter",
+    default: "USSD Bench",
+    template: "%s · USSD Bench",
   },
   description:
-    "Fit a USSD menu to the page budget, clean characters that break a paste, and count SMS segments. The text stays in the browser.",
+    "Fit a USSD menu before the gateway cuts it. Clean characters that break a paste and count SMS segments. The text stays in the browser.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
