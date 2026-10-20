@@ -18,7 +18,7 @@ export function CounterStrip() {
 
   return (
     <p
-      className="flex flex-wrap gap-x-3 gap-y-1 rounded-lg bg-muted px-3 py-2 font-mono text-xs leading-5 text-muted-foreground"
+      className="flex flex-wrap gap-x-3 gap-y-1 rounded-lg border border-border bg-muted/70 px-3 py-2.5 font-mono text-xs leading-5 text-foreground/85"
       aria-live="polite"
     >
       <span>{count} characters</span>
