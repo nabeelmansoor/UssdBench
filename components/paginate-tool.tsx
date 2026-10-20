@@ -145,7 +145,7 @@ export function PaginateTool() {
     <>
       <ToolIntro
         title="Paginate"
-        lede="Split one screen so each page fits the octet budget, with Next and Back or without them."
+        lede="Split one screen so each page fits the page size limit, with Next and Back or without them."
       />
       <ToolWorkLayout
         main={
