@@ -1,8 +1,10 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { BufferActions, BufferField } from "@/components/buffer-controls"
+import { BufferEditor } from "@/components/buffer-controls"
+import { CollapsiblePanel } from "@/components/collapsible-panel"
+import { ToolWorkLayout } from "@/components/tool-work-layout"
 import { CopyButton } from "@/components/copy-button"
 import { CounterStrip } from "@/components/counter-strip"
 import { PhonePreview } from "@/components/phone-preview"
@@ -34,12 +36,12 @@ function overflowCopy(page: PageModel): string {
   const quoted = `“${visibleLine(overflow.line)}”`
   const size = `It is ${overflow.units} ${unit}${marks}, and the limit is ${overflow.limit}.`
   if (overflow.lineNumber === 0) {
-    return `The navigation line ${quoted} does not fit in the budget. ${size} The menu is split below without those lines.`
+    return `The navigation line ${quoted} does not fit within the page size limit. ${size} The menu is split below without those lines.`
   }
   if (overflow.reason === "nav") {
     return `Line ${overflow.lineNumber} ${quoted} does not fit once the navigation line is reserved. ${size}`
   }
-  return `Line ${overflow.lineNumber} ${quoted} does not fit in the budget. ${size}`
+  return `Line ${overflow.lineNumber} ${quoted} does not fit within the page size limit. ${size}`
 }
 
 function causeWhere(page: PageModel): string {
@@ -54,12 +56,12 @@ function ucs2Copy(page: PageModel, budgetOctets: number): string | null {
   const limit = ucs2CharacterBudget(budgetOctets)
   const gsm = gsmSeptetBudget(budgetOctets)
   if (page.singleCharacterCause) {
-    return `This page is UCS-2 because of one character: ${named}. The budget is ${limit} characters, not ${gsm} septets.`
+    return `This page is UCS-2 because of one character: ${named}. The page size limit is ${limit} characters, not ${gsm} septets.`
   }
   if (page.analysis.nonGsmAllDirection) {
     return `This page is UCS-2 because of direction marks. The first is ${named}. Each mark is one of the ${limit} characters and adds no columns.`
   }
-  return `This page is UCS-2 because it contains characters outside GSM 7-bit. The first is ${named}. The budget is ${limit} characters, not ${gsm} septets.`
+  return `This page is UCS-2 because it contains characters outside GSM 7-bit. The first is ${named}. The page size limit is ${limit} characters, not ${gsm} septets.`
 }
 
 function pageStats(page: PageModel): string {
@@ -69,9 +71,33 @@ function pageStats(page: PageModel): string {
   return `${page.analysis.utf16Units} UCS-2 characters · ${page.analysis.octets} octets · UCS-2`
 }
 
+function PaginationHelp() {
+  return (
+    <>
+      <h3>Why a page is cut in the middle of a word</h3>
+      <p>
+        A gateway that receives more than its octet limit drops or cuts the reply. The cut is not obliged to land on a
+        space. Pagination keeps an explicit line break, refuses to break a numbered option, and keeps a line that opens
+        with a direction mark and closes with PDF on one page.
+      </p>
+      <h3>Next and Back use the same page size limit</h3>
+      <p>
+        On a real session the handset answers with a reply such as 99. That line is part of the string, so the body is
+        shortened until the navigation fits. Without links is for networks that already append their own More and Back.
+      </p>
+      <h3>The carriage-return pad</h3>
+      <p>
+        If a GSM page has a septet count one below a multiple of eight, some handsets pad with a carriage return, which
+        can show as an extra blank line. Copied pages use a line feed unless you choose a carriage return.
+      </p>
+    </>
+  )
+}
+
 export function PaginateTool() {
   const { state, ready, update } = useSession()
   const [selected, setSelected] = useState(0)
+  const phoneRef = useRef<HTMLDivElement>(null)
   const nextOk = isReplyKey(state.nextKey)
   const backOk = isReplyKey(state.backKey)
   const keysOk = nextOk && backOk
@@ -121,13 +147,15 @@ export function PaginateTool() {
         title="Paginate"
         lede="Split one screen so each page fits the octet budget, with Next and Back or without them."
       />
-      <ToolCanvas>
+      <ToolWorkLayout
+        main={
+          <>
         <CounterStrip />
-        <BufferField id="paginate-text" />
+        <BufferEditor id="paginate-text" />
         <div className="grid gap-4 rounded-xl border border-border bg-card p-4">
           <div className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:items-end">
             <div className="grid gap-1.5">
-              <Label htmlFor="budget">Page budget, octets</Label>
+              <Label htmlFor="budget">Page size limit</Label>
               <Input
                 id="budget"
                 type="number"
@@ -140,7 +168,11 @@ export function PaginateTool() {
                   if (Number.isInteger(next) && next >= 1 && next <= 2000) update({ budgetOctets: next })
                 }}
                 className="h-10 font-mono"
+                aria-describedby="budget-hint"
               />
+              <p id="budget-hint" className="text-xs leading-5 text-muted-foreground">
+                In octets (160 = typical USSD cap).
+              </p>
             </div>
             <div className="grid gap-2">
               <Button
@@ -243,13 +275,21 @@ export function PaginateTool() {
             </div>
           </fieldset>
         </div>
-        <BufferActions copyLabel="Copy text" />
-        <div className="grid gap-5">
-          <WidthControl />
-          <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={state.text.length === 0} />
+        <CollapsiblePanel title="How pagination works">
+          <PaginationHelp />
+        </CollapsiblePanel>
           {state.text.length === 0 ? (
             <p className="text-sm leading-6 text-muted-foreground">Paste a menu, or load the sample, to build pages.</p>
           ) : (
+            <div className="grid gap-4 lg:hidden">
+              <p className="text-sm font-medium text-primary">Phone preview</p>
+              <div ref={phoneRef}>
+                <WidthControl />
+                <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
+              </div>
+            </div>
+          )}
+          {state.text.length === 0 ? null : (
             <div className="grid gap-4">
               {pages.map((page, pageIndex) => {
                 const warning = ucs2Copy(page, state.budgetOctets)
@@ -297,9 +337,14 @@ export function PaginateTool() {
                         type="button"
                         variant={active ? "default" : "outline"}
                         className="h-11 w-full sm:w-auto"
-                        onClick={() => setSelected(pageIndex)}
+                        onClick={() => {
+                          setSelected(pageIndex)
+                          if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+                            phoneRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+                          }
+                        }}
                       >
-                        Show on the phone
+                        Preview on phone
                       </Button>
                       <CopyButton
                         text={page.overflow ? "" : copyPage(page, state.lineBreak)}
@@ -317,8 +362,21 @@ export function PaginateTool() {
               </p>
             </div>
           )}
-        </div>
-      </ToolCanvas>
+          </>
+        }
+        aside={
+          state.text.length > 0 ? (
+            <>
+              <WidthControl />
+              <PhonePreview lines={phoneLines} width={state.width} meta={phoneMeta} empty={false} />
+            </>
+          ) : (
+            <p className="text-sm leading-6 text-muted-foreground">
+              Paste a menu to see the phone preview here while you work through pages.
+            </p>
+          )
+        }
+      />
     </>
   )
 }

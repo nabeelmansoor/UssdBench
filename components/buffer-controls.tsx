@@ -41,6 +41,23 @@ export function BufferField({ id, label = "Menu text" }: { id: string; label?: s
   )
 }
 
+export function BufferEditor({
+  id,
+  label = "Menu text",
+  copyLabel = "Copy text",
+}: {
+  id: string
+  label?: string
+  copyLabel?: string
+}) {
+  return (
+    <div className="grid gap-2">
+      <BufferField id={id} label={label} />
+      <BufferActions copyLabel={copyLabel} />
+    </div>
+  )
+}
+
 export function BufferActions({
   copyLabel = "Copy text",
   stacked = false,

@@ -9,10 +9,10 @@ export function CounterStrip() {
   const { state } = useSession()
   const info = analyze(state.text)
   const sms = segmentSms(state.text)
-  const budget =
+  const pageLimit =
     info.encoding === "ucs2"
-      ? `${ucs2CharacterBudget(state.budgetOctets)} UCS-2`
-      : `${gsmSeptetBudget(state.budgetOctets)} GSM`
+      ? `${ucs2CharacterBudget(state.budgetOctets)} UCS-2 chars`
+      : `${gsmSeptetBudget(state.budgetOctets)} GSM septets`
   const count = info.encoding === "ucs2" ? info.utf16Units : info.characters
   const segmentLabel = sms.segments === 1 ? "segment" : "segments"
 
@@ -28,7 +28,9 @@ export function CounterStrip() {
       </span>
       {info.encoding === "gsm" ? <span>{info.septets} septets</span> : null}
       <span>{info.octets} USSD octets</span>
-      <span>budget {budget}</span>
+      <span>
+        page size limit {pageLimit} · {state.budgetOctets} octets
+      </span>
       <span>
         {sms.segments} SMS {segmentLabel}
       </span>
