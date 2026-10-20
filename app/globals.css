@@ -49,23 +49,23 @@
 }
 
 :root {
-  --background: oklch(0.985 0.006 240);
-  --foreground: oklch(0.21 0.025 250);
-  --card: oklch(1 0.002 240);
-  --card-foreground: oklch(0.21 0.025 250);
-  --popover: oklch(1 0.002 240);
-  --popover-foreground: oklch(0.21 0.025 250);
-  --primary: oklch(0.48 0.11 192);
+  --background: oklch(0.975 0.024 88);
+  --foreground: oklch(0.22 0.03 75);
+  --card: oklch(0.995 0.016 92);
+  --card-foreground: oklch(0.22 0.03 75);
+  --popover: oklch(0.995 0.016 92);
+  --popover-foreground: oklch(0.22 0.03 75);
+  --primary: oklch(0.46 0.12 192);
   --primary-foreground: oklch(0.99 0.01 192);
-  --secondary: oklch(0.955 0.008 240);
-  --secondary-foreground: oklch(0.28 0.025 250);
-  --muted: oklch(0.955 0.008 240);
-  --muted-foreground: oklch(0.45 0.025 250);
-  --accent: oklch(0.93 0.03 192);
-  --accent-foreground: oklch(0.32 0.06 192);
+  --secondary: oklch(0.94 0.028 90);
+  --secondary-foreground: oklch(0.28 0.03 75);
+  --muted: oklch(0.94 0.026 88);
+  --muted-foreground: oklch(0.44 0.03 75);
+  --accent: oklch(0.9 0.05 188);
+  --accent-foreground: oklch(0.28 0.07 192);
   --destructive: oklch(0.55 0.2 25);
-  --border: oklch(0.9 0.01 240);
-  --input: oklch(0.9 0.01 240);
+  --border: oklch(0.88 0.022 85);
+  --input: oklch(0.88 0.022 85);
   --ring: oklch(0.48 0.11 192);
   --chart-1: oklch(0.48 0.11 192);
   --chart-2: oklch(0.55 0.08 220);
@@ -123,6 +123,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(ellipse 120% 80% at 50% -20%, oklch(0.88 0.06 190 / 0.35), transparent 55%);
+  }
+  .dark body {
+    background-image: none;
   }
   html {
     @apply font-sans;

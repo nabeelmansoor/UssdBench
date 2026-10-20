@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BufferActions, BufferField } from "@/components/buffer-controls"
+import { BufferEditor } from "@/components/buffer-controls"
 import { CounterStrip } from "@/components/counter-strip"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -33,14 +33,7 @@ export function HomeScreen() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-          <div className="min-w-0 flex-1">
-            <BufferField id="home-text" />
-          </div>
-          <div className="w-full sm:w-44 sm:shrink-0">
-            <BufferActions stacked />
-          </div>
-        </div>
+        <BufferEditor id="home-text" />
         <div className="mt-5">
           <CounterStrip />
         </div>

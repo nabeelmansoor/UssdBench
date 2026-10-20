@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { BufferActions, BufferField } from "@/components/buffer-controls"
+import { BufferEditor } from "@/components/buffer-controls"
 import { CleanupActions } from "@/components/cleanup-actions"
 import { CounterStrip } from "@/components/counter-strip"
 import { Callout, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
@@ -88,9 +88,8 @@ export function CharactersTool() {
       />
       <ToolCanvas>
         <CounterStrip />
-        <BufferField id="characters-text" />
+        <BufferEditor id="characters-text" copyLabel="Copy real characters" />
         <CleanupActions />
-        <BufferActions copyLabel="Copy real characters" />
         <div className="grid gap-4">
           {state.text.length === 0 ? (
             <p className="text-sm leading-6 text-muted-foreground">
@@ -121,48 +120,72 @@ export function CharactersTool() {
                 </div>
               </div>
               {scan.findings.length > 0 ? (
-                <ol className="grid gap-3">
-                  {scan.findings.map((finding, index) => {
-                    const action = rowAction(finding)
-                    return (
-                      <li key={`${finding.utf16Index}-${index}`} className="grid gap-2 rounded-xl border border-border p-3">
-                        <div className="flex flex-wrap items-baseline justify-between gap-2">
-                          <p className="font-medium">
-                            {finding.standIn ? (
-                              <span className="mr-2 rounded bg-amber-200/90 px-1.5 py-0.5 font-mono text-xs text-amber-950 dark:bg-amber-300/20 dark:text-amber-100">
-                                {finding.standIn}
+                <div className="overflow-x-auto rounded-xl border border-border">
+                  <table className="w-full min-w-[36rem] text-left text-sm">
+                    <thead className="border-b border-border bg-muted/60 text-xs uppercase tracking-wide text-muted-foreground">
+                      <tr>
+                        <th className="px-3 py-2 font-medium">Char</th>
+                        <th className="px-3 py-2 font-medium">Name</th>
+                        <th className="px-3 py-2 font-medium">Line</th>
+                        <th className="px-3 py-2 font-medium">Reason</th>
+                        <th className="px-3 py-2 font-medium">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {scan.findings.map((finding, index) => {
+                        const action = rowAction(finding)
+                        return (
+                          <tr key={`${finding.utf16Index}-${index}`} className="align-top">
+                            <td className="px-3 py-2 font-mono">
+                              {finding.standIn ? (
+                                <span className="rounded bg-amber-200/90 px-1 py-0.5 text-xs text-amber-950 dark:bg-amber-300/20 dark:text-amber-100">
+                                  {finding.standIn}
+                                </span>
+                              ) : (
+                                finding.ch
+                              )}
+                            </td>
+                            <td className="px-3 py-2">
+                              <span className="font-medium">{finding.name}</span>
+                              <span className="mt-0.5 block font-mono text-xs text-muted-foreground">
+                                {formatCodePoint(finding.cp)}
                               </span>
-                            ) : (
-                              <span className="mr-2 font-mono">{finding.ch}</span>
-                            )}
-                            {finding.name}
-                          </p>
-                          <p className="font-mono text-xs text-muted-foreground">
-                            {formatCodePoint(finding.cp)} · line {finding.line}
-                          </p>
-                        </div>
-                        <p className="text-sm leading-6">{finding.reasonLabel}.</p>
-                        {finding.note ? <p className="text-sm leading-6 text-muted-foreground">{finding.note}</p> : null}
-                        {action ? (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="h-10 w-full sm:w-auto"
-                            onClick={() =>
-                              update({
-                                text: replaceAt(state.text, finding.utf16Index, finding.ch.length, action.replacement),
-                              })
-                            }
-                          >
-                            {action.label}
-                          </Button>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">No replacement. This character stays.</p>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ol>
+                            </td>
+                            <td className="px-3 py-2 font-mono text-muted-foreground">{finding.line}</td>
+                            <td className="px-3 py-2 leading-6 text-muted-foreground">
+                              {finding.reasonLabel}.
+                              {finding.note ? <span className="mt-1 block">{finding.note}</span> : null}
+                            </td>
+                            <td className="px-3 py-2">
+                              {action ? (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-9"
+                                  onClick={() =>
+                                    update({
+                                      text: replaceAt(
+                                        state.text,
+                                        finding.utf16Index,
+                                        finding.ch.length,
+                                        action.replacement,
+                                      ),
+                                    })
+                                  }
+                                >
+                                  {action.label}
+                                </Button>
+                              ) : (
+                                <span className="text-muted-foreground">Keep</span>
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               ) : null}
             </>
           )}

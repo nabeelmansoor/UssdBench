@@ -12,13 +12,13 @@ export default function CharactersPage() {
     <>
       <CharactersTool />
       <Explainer>
-        <h2>There is no character named Apple space</h2>
+        <h2>Apple space and smart punctuation</h2>
         <p>
-          The name is shorthand for what arrives from an iPhone, from Notes, Safari, Messages, or a page that was
-          itself copied from one of those. Smart punctuation turns a straight quote into a curly quote and a double
-          hyphen into an em dash. Some locales insert a narrow no-break space before punctuation. The text looks
-          ordinary. A gateway that only accepts GSM 7-bit then rejects it, or the length changes, or a menu option
-          stops matching because the space is not U+0020.
+          No Unicode character is literally called Apple space — developers use that name for special spaces and smart
+          punctuation pasted from iOS. Notes, Safari, and Messages often turn straight quotes into curly quotes, hyphens
+          into em dashes, and ordinary spaces into no-break or narrow spaces. The text looks fine on screen. A gateway
+          that only accepts GSM 7-bit may reject it, the octet count changes, or a menu option stops matching because
+          the space is not U+0020.
         </p>
         <h2>What the one-step cleanup will and will not touch</h2>
         <p>
