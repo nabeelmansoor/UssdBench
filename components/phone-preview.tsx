@@ -2,6 +2,8 @@
 
 import { layoutPhoneLine } from "@/lib/bidi"
 
+const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]
+
 export function PhonePreview({
   lines,
   width,
@@ -20,63 +22,100 @@ export function PhonePreview({
   const wideLines = wrapped.flatMap((line, index) => (line.columns > width ? [index + 1] : []))
 
   return (
-    <figure className="w-full max-w-full origin-top scale-[0.92] sm:scale-100">
-      <div className="mx-auto w-fit max-w-full rounded-[1.75rem] bg-[#121820] p-3 shadow-lg ring-1 ring-black/20 dark:bg-[#0a0e14]">
-        <div className="mx-auto mb-2 h-1.5 w-12 rounded-full bg-white/20" aria-hidden="true" />
-        <div
-          className="max-w-full overflow-x-auto rounded-xl bg-[#102418] px-3 py-3 text-[#d7f5d4]"
-          aria-label={`Phone preview, ${width} columns`}
-        >
-          {empty ? (
-            <p className="min-w-40 px-2 py-10 text-center text-sm text-[#d7f5d4]/70">
-              The screen stays blank until there is text.
-            </p>
-          ) : (
+    <figure className="w-full max-w-full">
+      <div className="mx-auto w-fit max-w-full rounded-[2.25rem] border-[1.5px] border-line bg-phone p-3.5 text-white shadow-hard-lg">
+        <div className="mx-auto mb-3 h-1.5 w-14 rounded-full bg-black/45" aria-hidden="true" />
+        <div className="rounded-2xl bg-bezel p-2">
+          <div
+            className="lcd-grid max-w-full overflow-x-auto rounded-lg bg-lcd text-lcd-foreground"
+            aria-label={`Phone preview, ${width} columns`}
+          >
             <div
-              dir="ltr"
-              className="font-mono text-[0.72rem] leading-snug sm:text-xs"
-              style={{ width: `${width}ch` }}
+              className="flex items-center justify-between border-b border-dashed border-lcd-dim/60 px-3 py-1 font-mono text-[0.62rem] font-bold tracking-widest text-lcd-dim uppercase"
+              aria-hidden="true"
             >
-              {wrapped.map((line, index) =>
-                line.blank ? (
-                  <div key={index} className="h-[1.35em]" />
-                ) : (
-                  line.rows.map((row, rowIndex) => (
-                    <div
-                      key={`${index}-${rowIndex}`}
-                      className="grid"
-                      dir="ltr"
-                      style={{ gridTemplateColumns: `repeat(${width}, 1ch)` }}
-                    >
-                      {row.map((unit, unitIndex) => (
-                        <span
-                          key={unitIndex}
-                          dir="ltr"
-                          style={{ gridColumn: `${unit.column + 1} / span ${Math.max(1, unit.cols)}` }}
-                          className={unit.emoji ? "text-[#f3d48a] underline decoration-wavy decoration-[#f3d48a]" : undefined}
-                          title={unit.emoji ? "Unsafe on a USSD handset. Wider than one GSM character." : undefined}
-                        >
-                          {unit.text}
-                        </span>
-                      ))}
-                    </div>
-                  ))
-                ),
-              )}
+              <span className="flex items-end gap-0.5">
+                <i className="block h-1 w-1 bg-current" />
+                <i className="block h-2 w-1 bg-current" />
+                <i className="block h-3 w-1 bg-current" />
+                <i className="block h-4 w-1 bg-current" />
+              </span>
+              <span>USSD</span>
+              <span className="block h-2.5 w-5 border border-current p-px">
+                <i className="block h-full w-3/4 bg-current" />
+              </span>
             </div>
-          )}
-          {meta ? (
-            <p className="mt-2 border-t border-[#d7f5d4]/20 pt-2 font-mono text-[0.65rem] leading-4 text-[#d7f5d4]/80">
-              {meta}
-            </p>
-          ) : null}
+            <div className="px-3 py-3">
+              {empty ? (
+                <p className="min-w-40 px-2 py-10 text-center font-mono text-sm text-lcd-dim">
+                  The screen stays blank until there is text.
+                </p>
+              ) : (
+                <div
+                  dir="ltr"
+                  className="font-mono text-[0.72rem] leading-snug sm:text-xs"
+                  style={{ width: `${width}ch` }}
+                >
+                  {wrapped.map((line, index) =>
+                    line.blank ? (
+                      <div key={index} className="h-[1.35em]" />
+                    ) : (
+                      line.rows.map((row, rowIndex) => (
+                        <div
+                          key={`${index}-${rowIndex}`}
+                          className="grid"
+                          dir="ltr"
+                          style={{ gridTemplateColumns: `repeat(${width}, 1ch)` }}
+                        >
+                          {row.map((unit, unitIndex) => (
+                            <span
+                              key={unitIndex}
+                              dir="ltr"
+                              style={{ gridColumn: `${unit.column + 1} / span ${Math.max(1, unit.cols)}` }}
+                              className={
+                                unit.emoji
+                                  ? "font-bold text-lcd-alert underline decoration-wavy"
+                                  : undefined
+                              }
+                              title={unit.emoji ? "Unsafe on a USSD handset. Wider than one GSM character." : undefined}
+                            >
+                              {unit.text}
+                            </span>
+                          ))}
+                        </div>
+                      ))
+                    ),
+                  )}
+                </div>
+              )}
+              {meta ? (
+                <p className="mt-3 border-t border-dashed border-lcd-dim/60 pt-2 font-mono text-[0.65rem] leading-4 font-semibold text-lcd-dim">
+                  {meta}
+                </p>
+              ) : null}
+            </div>
+          </div>
         </div>
-        <div className="mx-auto mt-2 h-8 w-8 rounded-full border border-white/15" aria-hidden="true" />
+        <div className="mt-3 flex items-center justify-between px-1 font-mono text-[0.7rem] font-bold tracking-wider uppercase" aria-hidden="true">
+          <span className="rounded-full bg-phone-key px-3 py-1">Cancel</span>
+          <span className="size-6 rounded-full border-2 border-white/60" />
+          <span className="rounded-full bg-phone-key px-3 py-1">Send</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-1.5 [@media(max-height:860px)]:hidden" aria-hidden="true">
+          {KEYS.map((key) => (
+            <span
+              key={key}
+              className="grid h-7 place-items-center rounded-md bg-phone-key font-mono text-xs font-bold"
+            >
+              {key}
+            </span>
+          ))}
+        </div>
       </div>
-      <figcaption className="mt-3 space-y-1 text-sm leading-6 text-muted-foreground">
+      <figcaption className="mt-4 space-y-1 text-sm leading-6 text-muted-foreground">
         <p>Preview only. It is not a claim about a particular handset.</p>
         {wideLines.length > 0 ? (
-          <p className="text-amber-900 dark:text-amber-100">
+          <p className="font-medium text-warn-foreground">
             {wideLines.length === 1
               ? `Line ${wideLines[0]} is wider than ${width} columns. The phone shows where it wraps.`
               : `Lines ${wideLines.join(", ")} are wider than ${width} columns. The phone shows where they wrap.`}

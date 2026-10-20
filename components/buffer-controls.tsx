@@ -23,7 +23,7 @@ export function BufferField({ id, label = "Menu text" }: { id: string; label?: s
   const { state, update } = useSession()
   return (
     <div className="grid gap-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className="font-semibold">{label}</Label>
       <Textarea
         id={id}
         value={state.text}
@@ -31,7 +31,7 @@ export function BufferField({ id, label = "Menu text" }: { id: string; label?: s
         spellCheck={false}
         autoCorrect="off"
         autoCapitalize="off"
-        className="field-sizing-fixed min-h-48 max-h-96 overflow-auto font-mono text-sm leading-6"
+        className="field-sizing-fixed max-h-96 min-h-48 overflow-auto font-mono text-sm leading-6"
         placeholder="Paste a USSD menu or an SMS."
       />
       {state.text === SAMPLE_TEXT ? (
@@ -75,7 +75,7 @@ export function BufferActions({
 
   return (
     <div className="grid gap-2">
-      <div className={stacked ? "flex flex-col gap-3" : "flex flex-col gap-3 sm:flex-row sm:flex-wrap"}>
+      <div className={stacked ? "flex flex-col gap-3" : "grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap"}>
         <Button
           type="button"
           variant="outline"

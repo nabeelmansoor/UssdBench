@@ -4,7 +4,7 @@ import type { ReactNode } from "react"
 import { BufferEditor } from "@/components/buffer-controls"
 import { CleanupActions } from "@/components/cleanup-actions"
 import { CounterStrip } from "@/components/counter-strip"
-import { Callout, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
+import { Callout, Panel, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
 import { Button } from "@/components/ui/button"
 import { classifyChar, replaceAt, scanText, type Finding } from "@/lib/cleanup"
 import { formatCodePoint } from "@/lib/names"
@@ -51,7 +51,7 @@ function MarkerText({ text }: { text: string }) {
         <span
           key={key}
           title={`${classified.name} ${formatCodePoint(codePoint)}`}
-          className="mx-0.5 inline-flex items-center rounded bg-amber-200/90 px-1 align-baseline font-sans text-[0.65rem] font-semibold text-amber-950 dark:bg-amber-300/20 dark:text-amber-100"
+          className="mx-0.5 inline-flex items-center rounded border border-warn-border bg-warn px-1 align-baseline font-mono text-[0.65rem] font-bold text-warn-foreground"
         >
           {classified.standIn}
         </span>,
@@ -88,8 +88,12 @@ export function CharactersTool() {
       />
       <ToolCanvas>
         <CounterStrip />
-        <BufferEditor id="characters-text" copyLabel="Copy real characters" />
-        <CleanupActions />
+        <Panel title="Menu text" note="Buffer">
+          <BufferEditor id="characters-text" copyLabel="Copy real characters" />
+        </Panel>
+        <Panel title="One-step cleanup">
+          <CleanupActions />
+        </Panel>
         <div className="grid gap-4">
           {state.text.length === 0 ? (
             <p className="text-sm leading-6 text-muted-foreground">
@@ -108,55 +112,54 @@ export function CharactersTool() {
                   direction mark.
                 </Callout>
               )}
-              <div className="rounded-xl border border-border bg-card p-4">
-                <h2 className="text-sm font-semibold">Marker view</h2>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+              <Panel title="Marker view">
+                <p className="text-sm leading-6 text-muted-foreground">
                   Special spaces, zero-width characters, and direction marks are labeled here. The phone preview hides
                   direction marks and shows their effect. Copy real characters copies the menu in the box, not these
                   labels.
                 </p>
-                <div className="mt-3">
+                <div className="rounded-md border border-border bg-muted p-3">
                   <MarkerText text={state.text} />
                 </div>
-              </div>
+              </Panel>
               {scan.findings.length > 0 ? (
-                <div className="overflow-x-auto rounded-xl border border-border">
+                <div className="overflow-x-auto rounded-lg border-[1.5px] border-line bg-card">
                   <table className="w-full min-w-[36rem] text-left text-sm">
-                    <thead className="border-b border-border bg-muted/60 text-xs uppercase tracking-wide text-muted-foreground">
+                    <thead className="border-b-[1.5px] border-line bg-secondary font-mono text-xs tracking-[0.08em] text-secondary-foreground uppercase">
                       <tr>
-                        <th className="px-3 py-2 font-medium">Char</th>
-                        <th className="px-3 py-2 font-medium">Name</th>
-                        <th className="px-3 py-2 font-medium">Line</th>
-                        <th className="px-3 py-2 font-medium">Reason</th>
-                        <th className="px-3 py-2 font-medium">Action</th>
+                        <th className="px-3 py-1.5 font-semibold">Char</th>
+                        <th className="px-3 py-1.5 font-semibold">Name</th>
+                        <th className="px-3 py-1.5 font-semibold">Line</th>
+                        <th className="px-3 py-1.5 font-semibold">Reason</th>
+                        <th className="px-3 py-1.5 font-semibold">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
                       {scan.findings.map((finding, index) => {
                         const action = rowAction(finding)
                         return (
-                          <tr key={`${finding.utf16Index}-${index}`} className="align-top">
-                            <td className="px-3 py-2 font-mono">
+                          <tr key={`${finding.utf16Index}-${index}`} className="align-top odd:bg-card even:bg-muted/50">
+                            <td className="px-3 py-1.5 font-mono">
                               {finding.standIn ? (
-                                <span className="rounded bg-amber-200/90 px-1 py-0.5 text-xs text-amber-950 dark:bg-amber-300/20 dark:text-amber-100">
+                                <span className="rounded border border-warn-border bg-warn px-1 py-0.5 text-xs font-bold text-warn-foreground">
                                   {finding.standIn}
                                 </span>
                               ) : (
                                 finding.ch
                               )}
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-1.5">
                               <span className="font-medium">{finding.name}</span>
                               <span className="mt-0.5 block font-mono text-xs text-muted-foreground">
                                 {formatCodePoint(finding.cp)}
                               </span>
                             </td>
-                            <td className="px-3 py-2 font-mono text-muted-foreground">{finding.line}</td>
-                            <td className="px-3 py-2 leading-6 text-muted-foreground">
+                            <td className="px-3 py-1.5 font-mono text-muted-foreground">{finding.line}</td>
+                            <td className="px-3 py-1.5 leading-6 text-muted-foreground">
                               {finding.reasonLabel}.
                               {finding.note ? <span className="mt-1 block">{finding.note}</span> : null}
                             </td>
-                            <td className="px-3 py-2">
+                            <td className="px-3 py-1.5">
                               {action ? (
                                 <Button
                                   type="button"

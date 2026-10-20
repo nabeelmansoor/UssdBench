@@ -4,7 +4,7 @@ import Link from "next/link"
 import { BufferEditor } from "@/components/buffer-controls"
 import { CleanupActions } from "@/components/cleanup-actions"
 import { CounterStrip } from "@/components/counter-strip"
-import { Callout, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
+import { Callout, Panel, Reading, ToolCanvas, ToolIntro } from "@/components/tool-frame"
 import { analyze, isGsmExtension } from "@/lib/gsm"
 import {
   cleanupText,
@@ -28,8 +28,8 @@ function Highlighted({ text, encoding }: { text: string; encoding: "gsm" | "ucs2
           key={key}
           className={
             cause
-              ? "rounded bg-amber-300/80 px-0.5 text-foreground dark:bg-amber-400/30"
-              : "rounded bg-amber-200/80 px-0.5 text-foreground dark:bg-amber-300/20"
+              ? "rounded border-b-2 border-warn-border bg-warn px-0.5 font-bold text-warn-foreground"
+              : "rounded bg-warn/70 px-0.5 text-warn-foreground"
           }
           title={extension ? "GSM extension character. Counts as two septets." : "This character forces UCS-2."}
         >
@@ -76,21 +76,25 @@ export function SmsTool() {
         lede="Count characters, septets, and segments. One character outside GSM 7-bit switches the whole message."
       />
       <ToolCanvas>
-        <div className="rounded-xl border border-primary/15 bg-primary/5 px-4 py-3 text-sm leading-6">
-          <p className="font-medium text-foreground">What this tool does</p>
-          <p className="mt-1 text-muted-foreground">
+        <div className="rounded-lg border-[1.5px] border-line bg-accent px-4 py-4 text-sm leading-6 text-accent-foreground shadow-hard">
+          <p className="font-heading text-lg font-bold">What this tool does</p>
+          <p className="mt-1">
             Count how many SMS segments your message needs. One character outside the GSM 7-bit alphabet switches the
             whole message to UCS-2. Highlighted characters show extension septets (two septets each) or the first
             character that forces UCS-2.
           </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
+          <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>GSM 7-bit: 160 septets in one segment, 153 per part when concatenated.</li>
             <li>UCS-2: 70 characters in one segment, 67 per part when concatenated.</li>
           </ul>
         </div>
         <CounterStrip />
-        <BufferEditor id="sms-text" label="Message text" />
-        <CleanupActions />
+        <Panel title="Message text" note="Buffer">
+          <BufferEditor id="sms-text" label="Message text" />
+        </Panel>
+        <Panel title="One-step cleanup">
+          <CleanupActions />
+        </Panel>
         <div className="grid gap-4">
           {state.text.length === 0 ? (
             <p className="text-sm leading-6 text-muted-foreground">
@@ -139,12 +143,12 @@ export function SmsTool() {
                   Fullwidth lookalikes are still in the text. Folding them is separate from the punctuation cleanup.
                 </p>
               ) : null}
-              <div className="overflow-x-auto rounded-xl border border-border bg-card p-4 font-mono text-sm leading-6 whitespace-pre-wrap">
+              <div className="overflow-x-auto rounded-lg border-[1.5px] border-line bg-card p-4 font-mono text-sm leading-6 whitespace-pre-wrap">
                 {sms.parts.map((part, index) => (
                   <div key={index}>
                     <Highlighted text={part.text} encoding={sms.encoding} />
                     {index < sms.parts.length - 1 ? (
-                      <span className="my-3 block border-t border-dashed border-primary/50 pt-2 font-sans text-xs tracking-wide text-muted-foreground uppercase">
+                      <span className="my-3 block border-t-2 border-dashed border-primary pt-2 font-sans text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                         End of segment {index + 1}
                         {sms.encoding === "gsm" ? ` · ${part.septets} of ${part.limit} septets` : ` · ${part.units} of ${part.limit} characters`}
                       </span>

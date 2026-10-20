@@ -6,7 +6,7 @@ import { BufferEditor } from "@/components/buffer-controls"
 import { CopyButton } from "@/components/copy-button"
 import { CounterStrip } from "@/components/counter-strip"
 import { PhonePreview } from "@/components/phone-preview"
-import { Callout, Reading, ToolIntro, actionButtonClass } from "@/components/tool-frame"
+import { Callout, Panel, Reading, ToolIntro, actionButtonClass } from "@/components/tool-frame"
 import { ToolWorkLayout } from "@/components/tool-work-layout"
 import { WidthControl } from "@/components/width-control"
 import { Button } from "@/components/ui/button"
@@ -40,7 +40,7 @@ export function AlignTool() {
     return (
       <>
         <ToolIntro title="Align" lede="Pad lines to the width you set, and force direction per line." />
-        <div className="tool-shell mt-6">
+        <div className="container-page mt-8">
           <Reading />
         </div>
       </>
@@ -60,15 +60,16 @@ export function AlignTool() {
         main={
           <>
             <CounterStrip />
-            <BufferEditor id="align-text" />
-            <div className="grid gap-3 rounded-xl border border-border bg-card p-4">
-              <p className="text-sm font-medium">Edge</p>
-              <div className="flex flex-col gap-2 sm:flex-row">
+            <Panel title="Menu text" note="Buffer">
+              <BufferEditor id="align-text" />
+            </Panel>
+            <Panel title="Edge">
+              <div className="segmented">
                 {EDGES.map((edge) => (
                   <Button
                     key={edge.mode}
                     type="button"
-                    className="h-11 w-full sm:w-auto"
+                    className="h-11"
                     variant={state.alignMode === edge.mode ? "default" : "outline"}
                     aria-pressed={state.alignMode === edge.mode}
                     onClick={() => update({ alignMode: edge.mode })}
@@ -82,79 +83,16 @@ export function AlignTool() {
                 the width is left unchanged.
               </p>
               {state.text.length > 0 ? (
-                <div className="grid gap-2">
-                  <p className="text-sm font-medium">Preview · {state.alignMode}</p>
+                <div className="grid gap-3 border-t border-border pt-4">
+                  <p className="text-sm font-semibold">Preview · {state.alignMode}</p>
                   <pre
-                    className="overflow-x-auto rounded-lg border border-primary/20 bg-primary/5 p-3 font-mono text-sm leading-6 whitespace-pre-wrap"
+                    className="overflow-x-auto rounded-md border-[1.5px] border-primary bg-muted p-3 font-mono text-sm leading-6 whitespace-pre-wrap"
                     aria-label={`Padded preview, ${state.alignMode} edge`}
                   >
                     {lines.map((line) => visiblePadding(line.text)).join("\n")}
                   </pre>
                   <p className="text-xs text-muted-foreground">Spaces show as middle dots (·). Direction marks stay labeled.</p>
-                </div>
-              ) : null}
-            </div>
-            {state.text.length === 0 ? (
-              <p className="text-sm leading-6 text-muted-foreground">
-                Paste a menu, or load the sample. The phone stays blank until there is text.
-              </p>
-            ) : (
-              <>
-                <div className="grid gap-4 lg:hidden">
-                  <p className="text-sm font-medium text-primary">Phone preview</p>
-                  <WidthControl showAmbiguous />
-                  <PhonePreview lines={previewLines} width={state.width} empty={false} meta={phoneMeta} />
-                </div>
-                <div className="grid gap-3">
-                  {lines.map((line, index) => (
-                    <div key={line.lineNumber} className="grid gap-2 rounded-xl border border-border p-3">
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <p className="text-sm font-medium">Line {line.lineNumber}</p>
-                        <p className="font-mono text-xs text-muted-foreground">
-                          {line.columns} columns
-                          {line.overflow ? ` · wider than ${state.width}` : ""}
-                          {line.direction === "rtl" ? " · right to left" : ""}
-                          {line.direction === "ltr" ? " · left to right" : ""}
-                        </p>
-                      </div>
-                      <pre className="overflow-x-auto font-mono text-sm leading-6 whitespace-pre-wrap">
-                        {marked(line.source)}
-                      </pre>
-                      {line.overflow ? (
-                        <Callout tone="warning">This line is wider than {state.width} columns, so it is not padded.</Callout>
-                      ) : null}
-                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                        <Button
-                          type="button"
-                          variant={line.direction === "rtl" ? "default" : "outline"}
-                          className="h-10 w-full sm:w-auto"
-                          aria-pressed={line.direction === "rtl"}
-                          onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "rtl") }))}
-                        >
-                          Right to left
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={line.direction === "ltr" ? "default" : "outline"}
-                          className="h-10 w-full sm:w-auto"
-                          aria-pressed={line.direction === "ltr"}
-                          onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "ltr") }))}
-                        >
-                          Left to right
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="h-10 w-full sm:w-auto"
-                          disabled={line.direction === null}
-                          onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "clear") }))}
-                        >
-                          Clear direction
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
                     <Button
                       type="button"
                       className={actionButtonClass}
@@ -176,18 +114,84 @@ export function AlignTool() {
                     {formatCodePoint(0x202c)}.
                   </p>
                 </div>
+              ) : null}
+            </Panel>
+            <Panel title="Phone width">
+              <WidthControl showAmbiguous />
+            </Panel>
+            {state.text.length === 0 ? (
+              <p className="text-sm leading-6 text-muted-foreground">
+                Paste a menu, or load the sample. The phone stays blank until there is text.
+              </p>
+            ) : (
+              <>
+                <div className="grid gap-3 lg:hidden">
+                  <p className="kicker">Phone preview</p>
+                  <PhonePreview lines={previewLines} width={state.width} empty={false} meta={phoneMeta} />
+                </div>
+                <Panel title="Lines and direction">
+                  <div className="grid gap-4">
+                    {lines.map((line, index) => (
+                      <div key={line.lineNumber} className="grid gap-2 border-t border-border pt-4 first:border-t-0 first:pt-0">
+                        <div className="flex flex-wrap items-baseline justify-between gap-2">
+                          <p className="text-sm font-semibold">Line {line.lineNumber}</p>
+                          <p className="font-mono text-xs text-muted-foreground">
+                            {line.columns} columns
+                            {line.overflow ? ` · wider than ${state.width}` : ""}
+                            {line.direction === "rtl" ? " · right to left" : ""}
+                            {line.direction === "ltr" ? " · left to right" : ""}
+                          </p>
+                        </div>
+                        <pre className="overflow-x-auto rounded-md bg-muted px-3 py-2 font-mono text-sm leading-6 whitespace-pre-wrap">
+                          {marked(line.source)}
+                        </pre>
+                        {line.overflow ? (
+                          <Callout tone="warning">This line is wider than {state.width} columns, so it is not padded.</Callout>
+                        ) : null}
+                        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                          <Button
+                            type="button"
+                            variant={line.direction === "rtl" ? "default" : "outline"}
+                            className="h-10 w-full sm:w-auto"
+                            aria-pressed={line.direction === "rtl"}
+                            onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "rtl") }))}
+                          >
+                            Right to left
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={line.direction === "ltr" ? "default" : "outline"}
+                            className="h-10 w-full sm:w-auto"
+                            aria-pressed={line.direction === "ltr"}
+                            onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "ltr") }))}
+                          >
+                            Left to right
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="h-10 w-full sm:w-auto"
+                            disabled={line.direction === null}
+                            onClick={() => update((current) => ({ text: setLineDirection(current.text, index, "clear") }))}
+                          >
+                            Clear direction
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Panel>
               </>
             )}
           </>
         }
         aside={
           state.text.length > 0 ? (
-            <>
-              <WidthControl showAmbiguous />
-              <PhonePreview lines={previewLines} width={state.width} empty={false} meta={phoneMeta} />
-            </>
+            <PhonePreview lines={previewLines} width={state.width} empty={false} meta={phoneMeta} />
           ) : (
-            <p className="text-sm leading-6 text-muted-foreground">Paste a menu to see padded lines on the phone.</p>
+            <p className="rounded-md border border-dashed border-line p-4 text-sm leading-6 text-muted-foreground">
+              Paste a menu to see padded lines on the phone.
+            </p>
           )
         }
       />
