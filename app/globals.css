@@ -12,7 +12,12 @@
 
 @theme inline {
   --font-sans: var(--font-body);
-  --font-mono: var(--font-code);
+  /*
+   * "JetBrains Mono" is named before the script fonts because var(--font-code) also carries next/font's
+   * local(Arial) fallback face, and Arial on Windows and macOS would catch Arabic before Noto Kufi Arabic.
+   */
+  --font-mono:
+    "JetBrains Mono", var(--font-arabic), var(--font-devanagari), var(--font-code), ui-monospace, monospace;
   --font-heading: var(--font-display);
 
   --color-background: var(--background);
@@ -164,52 +169,81 @@
 }
 
 /*
- * Section bases. USSD pages are ultramarine and SMS pages are green, in both themes.
- * Everything else (paper, ink, lime signal, hard shadows, LCD) stays Short Code.
+ * Section bases. USSD pages use shades of ultramarine and SMS pages shades of green, in both themes.
+ * Paper, ink, the lime signal, hard shadows, and the LCD stay Short Code.
  */
 [data-section="ussd"] {
   --primary: #3326d9;
   --primary-foreground: #ffffff;
   --ring: #3326d9;
-  --secondary: #e6e8f7;
-  --muted: #eceef9;
+  --secondary: #d9d5ff;
+  --secondary-foreground: #0c0f24;
+  --muted: #eceaff;
+  --muted-foreground: #423d86;
+  --border: #bdb7f5;
   --phone: #3326d9;
   --phone-key: #5247f0;
-  --section-wash: #e9e7ff;
+  --section-wash: #e3e0ff;
+  --section-deep: #3326d9;
 }
 .dark [data-section="ussd"] {
   --primary: #8c84ff;
   --primary-foreground: #0c0f24;
   --ring: #8c84ff;
-  --secondary: #1c2048;
-  --muted: #171a38;
+  --card: #120f3d;
+  --card-foreground: #eef0ff;
+  --popover: #120f3d;
+  --secondary: #262090;
+  --secondary-foreground: #eef0ff;
+  --muted: #1b1760;
+  --muted-foreground: #b8b4ff;
+  --border: #2f2a8f;
+  --line: #6f66ff;
   --accent: #c8f03c;
   --phone: #241f8f;
   --phone-key: #3a33b8;
-  --section-wash: #1a1850;
+  --section-wash: #17134d;
+  --section-deep: #8c84ff;
 }
 [data-section="sms"] {
-  --primary: #0b7a3d;
+  --primary: #08703a;
   --primary-foreground: #ffffff;
-  --ring: #0b7a3d;
-  --secondary: #e3f3e9;
-  --muted: #eaf5ee;
-  --border: #c2dccb;
+  --ring: #08703a;
+  --secondary: #c9ecd6;
+  --secondary-foreground: #0c0f24;
+  --muted: #e5f6eb;
+  --muted-foreground: #2c5a3e;
+  --border: #a9d8b9;
   --phone: #0b7a3d;
   --phone-key: #179752;
-  --section-wash: #dcf5e5;
+  --section-wash: #d6f2e0;
+  --section-deep: #08703a;
 }
 .dark [data-section="sms"] {
   --primary: #3ddc84;
   --primary-foreground: #04140b;
   --ring: #3ddc84;
-  --secondary: #12301f;
-  --muted: #10261a;
-  --border: #1f4a32;
+  --card: #0d2318;
+  --card-foreground: #eef0ff;
+  --popover: #0d2318;
+  --secondary: #145230;
+  --secondary-foreground: #eef0ff;
+  --muted: #103622;
+  --muted-foreground: #a6dcb9;
+  --border: #1f5a3a;
+  --line: #2f9a5f;
   --accent: #c8f03c;
   --phone: #0f3a22;
   --phone-key: #1a5634;
-  --section-wash: #0f2a1b;
+  --section-wash: #0c2a1a;
+  --section-deep: #3ddc84;
+}
+[data-section] {
+  background-image: linear-gradient(to bottom, var(--section-wash), transparent 640px);
+}
+[data-section] .panel-head {
+  box-shadow: inset 4px 0 0 0 var(--section-deep);
+  padding-left: 1.25rem;
 }
 
 @layer base {
@@ -297,6 +331,10 @@
 }
 
 @layer utilities {
+  .phone-text {
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+  }
   .lcd-grid {
     background-image: repeating-linear-gradient(
       to bottom,

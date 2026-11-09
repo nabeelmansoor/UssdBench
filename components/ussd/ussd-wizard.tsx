@@ -8,21 +8,16 @@ import { Reading, ToolCanvas } from "@/components/tool-frame"
 import { AlignmentStep } from "@/components/ussd/alignment-step"
 import { CharacterReviewStep } from "@/components/ussd/character-review-step"
 import { PaginationStep, type LanguageUpdater } from "@/components/ussd/pagination-step"
-import { SectionShell, StepIndicator, WizardNav, type WizardStep } from "@/components/wizard"
+import { SectionShell, StepIndicator, WizardNav } from "@/components/wizard"
 import { defaultCharsPerPage, ENCODING_LABEL, ENCODING_UNIT } from "@/lib/encoding"
 import { getLanguage } from "@/lib/languages"
 import { ussdSample } from "@/lib/sample"
 import { useSession } from "@/lib/session"
+import { USSD_STEPS } from "@/lib/tools"
 import { copyUssdPages } from "@/lib/ussd-pagination"
 import { deriveUssd, newUssdLanguage, type UssdDerived } from "@/lib/workflow"
 
-const STEPS: WizardStep[] = [
-  { label: "Input" },
-  { label: "Encoding" },
-  { label: "Pagination" },
-  { label: "Alignment" },
-  { label: "Character Review", optional: true },
-]
+const STEPS = USSD_STEPS
 
 export function UssdWizard() {
   const { state, ready, updateUssd } = useSession()

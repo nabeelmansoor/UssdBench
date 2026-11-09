@@ -46,6 +46,57 @@ export function hasUnsafeEmoji(text: string): boolean {
   return walkWidth(text).some((unit) => unit.emoji)
 }
 
+/**
+ * Wraps text to a column width at spaces. A word wider than the row is cut between characters.
+ * The space where a row breaks is dropped, as a handset does.
+ */
+export function wrapWords(text: string, width: number): string[] {
+  const columns = Math.max(1, width)
+  const rows: string[] = []
+  let row = ""
+  let used = 0
+  for (const token of text.match(/\S+|\s+/g) ?? []) {
+    const cols = displayColumns(token)
+    if (/^\s+$/.test(token)) {
+      if (used > 0 && used + cols <= columns) {
+        row += token
+        used += cols
+      } else if (used > 0) {
+        rows.push(row)
+        row = ""
+        used = 0
+      }
+      continue
+    }
+    if (used + cols <= columns) {
+      row += token
+      used += cols
+      continue
+    }
+    if (used > 0) {
+      rows.push(row.trimEnd())
+      row = ""
+      used = 0
+    }
+    if (cols <= columns) {
+      row = token
+      used = cols
+      continue
+    }
+    for (const piece of wrapUnits(walkWidth(token), columns)) {
+      const pieceText = piece.map((unit) => unit.text).join("")
+      const pieceCols = displayColumns(pieceText)
+      if (pieceCols >= columns) rows.push(pieceText)
+      else {
+        row = pieceText
+        used = pieceCols
+      }
+    }
+  }
+  if (row.trimEnd().length > 0) rows.push(row.trimEnd())
+  return rows.length > 0 ? rows : [""]
+}
+
 export function wrapUnits(units: WidthUnit[], width: number): WidthUnit[][] {
   const columns = Math.max(1, width)
   const rows: WidthUnit[][] = []

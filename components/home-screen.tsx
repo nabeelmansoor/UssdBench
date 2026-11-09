@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { TOOLS } from "@/lib/tools"
+import { TAGLINE, TOOLS } from "@/lib/tools"
 
 const LIMITS = [
   { label: "USSD GSM-7", value: "182", detail: "septets per page" },
@@ -10,11 +10,6 @@ const LIMITS = [
   { label: "SMS Latin-1", value: "140 / 134", detail: "single / part" },
   { label: "SMS UCS-2", value: "70 / 67", detail: "single / part" },
 ]
-
-const STEPS: Record<string, string[]> = {
-  "/ussd": ["Input", "Encoding", "Pagination", "Alignment", "Character Review"],
-  "/sms": ["Input", "Encoding", "Segments"],
-}
 
 function LimitsReadout() {
   return (
@@ -44,15 +39,18 @@ export function HomeScreen() {
     <div className="container-page pt-8 pb-4 lg:pt-14">
       <section className="grid items-end gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-12">
         <div>
-          <p className="kicker">Menu and SMS workbench</p>
+          <p className="kicker">{TAGLINE}</p>
           <h1 className="mt-4 max-w-[16ch] text-[2.75rem] leading-[0.98] font-extrabold tracking-tight text-balance sm:text-6xl xl:text-7xl">
             Fit the menu before the{" "}
             <span className="rounded-sm bg-accent px-1.5 text-accent-foreground [box-decoration-break:clone]">gateway</span>{" "}
             cuts it
           </h1>
           <p className="mt-6 max-w-[56ch] text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-            Write each language once. Smart quotes and special spaces are replaced for you, the encoding is picked per
-            language, and the pages or segments are counted the way the network counts them.
+            Write your USSD menu or SMS content once in each language and let the formatter handle the rest. It
+            automatically replaces invalid or unsupported characters that could disrupt USSD or SMS delivery, selects
+            the appropriate encoding for each language, accurately paginates content according to network rules, and
+            can automatically add navigation options such as Back and Next links. USSD Bench - The Complete Toolkit
+            for USSD Menu Preparation
           </p>
         </div>
         <LimitsReadout />
@@ -78,13 +76,13 @@ export function HomeScreen() {
               <span className="mt-1 block text-sm leading-6 text-muted-foreground">{tool.description}</span>
             </span>
             <ol className="flex flex-wrap gap-2">
-              {STEPS[tool.href]?.map((step, index) => (
+              {tool.steps.map((step, index) => (
                 <li
-                  key={step}
+                  key={step.label}
                   className="inline-flex items-center gap-1.5 rounded border border-border bg-muted px-2 py-1 font-mono text-xs"
                 >
                   <span className="font-bold text-primary">{index + 1}</span>
-                  {step}
+                  {step.label}
                 </li>
               ))}
             </ol>

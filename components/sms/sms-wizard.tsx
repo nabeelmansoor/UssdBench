@@ -8,16 +8,17 @@ import { EncodingBadge, LanguageTabs } from "@/components/language-tabs"
 import { PhonePreview } from "@/components/phone-preview"
 import { ToolWorkLayout } from "@/components/tool-work-layout"
 import { Callout, Panel, Reading, ToolCanvas } from "@/components/tool-frame"
-import { SectionShell, StepIndicator, WizardNav, type WizardStep } from "@/components/wizard"
+import { SectionShell, StepIndicator, WizardNav } from "@/components/wizard"
 import { ENCODING_LABEL, ENCODING_UNIT, type Encoding } from "@/lib/encoding"
 import { isGsmExtension } from "@/lib/gsm"
 import { getLanguage } from "@/lib/languages"
 import { smsSample } from "@/lib/sample"
 import { useSession } from "@/lib/session"
 import { SMS_LIMITS } from "@/lib/sms-segments"
+import { SMS_STEPS } from "@/lib/tools"
 import { deriveSms, newSmsLanguage, type SmsDerived, type SmsLanguage } from "@/lib/workflow"
 
-const STEPS: WizardStep[] = [{ label: "Input" }, { label: "Encoding" }, { label: "Segments" }]
+const STEPS = SMS_STEPS
 
 function SegmentText({ text, encoding }: { text: string; encoding: Encoding }) {
   const nodes: React.ReactNode[] = []

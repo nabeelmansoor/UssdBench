@@ -18,7 +18,7 @@ export function Footer() {
             Contact
           </Link>
         </nav>
-        <p className="font-mono text-xs text-muted-foreground">USSD Bench · the menu stays in this browser</p>
+        <p className="font-mono text-xs text-muted-foreground">Build, Format, and Finalize USSD Menus with Confidence</p>
       </div>
     </footer>
   )

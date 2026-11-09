@@ -3,10 +3,11 @@
 import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
+import type { WizardStep } from "@/lib/tools"
 
 export type Section = "ussd" | "sms"
 
-export type WizardStep = { label: string; optional?: boolean }
+export type { WizardStep } from "@/lib/tools"
 
 export function SectionShell({
   section,
@@ -26,7 +27,7 @@ export function SectionShell({
           <span className="inline-flex h-7 items-center rounded-md border-[1.5px] border-line bg-primary px-2 font-mono text-xs font-bold tracking-[0.12em] text-primary-foreground uppercase">
             {section === "ussd" ? "USSD" : "SMS"}
           </span>
-          <p className="kicker">{section === "ussd" ? "Menu formatter" : "Message formatter"}</p>
+          <p className="kicker text-primary">{section === "ussd" ? "Menu formatter" : "Message formatter"}</p>
         </div>
         <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">{title}</h1>
         <div className="mt-4 h-1.5 w-16 bg-primary" aria-hidden="true" />
@@ -48,7 +49,7 @@ export function StepIndicator({
 }) {
   return (
     <nav aria-label="Steps" className="container-page mt-8">
-      <ol className="flex gap-2 overflow-x-auto pb-1 sm:gap-3">
+      <ol className="flex flex-wrap gap-2 pb-1 sm:flex-nowrap sm:gap-3 sm:overflow-x-auto">
         {steps.map((step, index) => {
           const state = index === current ? "current" : index < current ? "done" : "todo"
           return (
@@ -61,7 +62,7 @@ export function StepIndicator({
                   "group flex items-center gap-2 rounded-md border-[1.5px] py-1.5 pr-3 pl-1.5 text-left text-sm font-semibold transition-[transform,box-shadow]",
                   state === "current"
                     ? "border-line bg-primary text-primary-foreground shadow-hard-sm"
-                    : "border-line bg-card text-foreground hover:-translate-x-px hover:-translate-y-px hover:shadow-hard-sm",
+                    : "border-line bg-secondary text-secondary-foreground hover:-translate-x-px hover:-translate-y-px hover:shadow-hard-sm",
                 )}
               >
                 <span
@@ -95,7 +96,7 @@ export function StepIndicator({
                 </span>
               </button>
               {index < steps.length - 1 ? (
-                <span aria-hidden="true" className="h-[1.5px] w-3 bg-line sm:w-5" />
+                <span aria-hidden="true" className="hidden h-[1.5px] w-5 bg-primary sm:block" />
               ) : null}
             </li>
           )

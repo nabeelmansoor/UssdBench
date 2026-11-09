@@ -1,45 +1,36 @@
 import { describe, expect, it } from "vitest"
-import { layoutPhoneLine, visualPhoneText } from "@/lib/bidi"
+import { layoutPhoneLine, paragraphDirection } from "@/lib/bidi"
+import { wrapWords } from "@/lib/width"
 
-const ARABIC = "\u0631\u0635\u064A\u062F"
-const ARABIC_READING_ORDER = "\u062F\u064A\u0635\u0631"
+const BALANCE = "\u0627\u0644\u0631\u0635\u064A\u062F"
 
-describe("phone bidi", () => {
-  it("keeps a mixed line's Latin in order and the Arabic in reading order", () => {
-    const mixed = `1. Balance ${ARABIC}`
-    const visual = `1. Balance ${ARABIC_READING_ORDER}`
-    expect(visualPhoneText(mixed)).toBe(visual)
-    expect(visualPhoneText(`\u202A${mixed}\u202C`)).toBe(visual)
-
-    const rtl = visualPhoneText(`\u202B${mixed}\u202C`)
-    expect(rtl).toContain("Balance")
-    expect(rtl).not.toContain("ecnelaB")
-    expect(rtl).toContain(ARABIC_READING_ORDER)
-    expect(rtl).not.toContain(ARABIC)
+describe("phone layout", () => {
+  it("keeps Arabic in logical order so the browser can shape and join it", () => {
+    const layout = layoutPhoneLine(`1. ${BALANCE}`, 32, "rtl")
+    expect(layout.dir).toBe("rtl")
+    expect(layout.rows.map((row) => row.text)).toEqual([`1. ${BALANCE}`])
   })
 
-  it("does not reverse Latin letters inside RLE, and right-aligns that line", () => {
-    expect(visualPhoneText("\u202BMy account\u202C")).toBe("My account")
-    expect(visualPhoneText("\u202BMy account\u202C")).not.toBe("tnuocca yM")
-
-    const row = layoutPhoneLine("\u202BMy account\u202C", 16).rows[0] ?? []
-    expect(row.map((unit) => unit.text).join("")).toBe("My account")
-    expect(row[0]?.column).toBe(6)
-
-    const padded = layoutPhoneLine("\u202BMy account      \u202C", 16).rows[0] ?? []
-    expect(padded.map((unit) => unit.text).join("")).toBe("      My account")
-    expect(layoutPhoneLine("\u202AMy account\u202C", 16).rows[0]?.[0]?.column).toBe(0)
+  it("strips the page marks and takes the direction from them", () => {
+    expect(layoutPhoneLine(`\u202B${BALANCE}\u202C`, 32)).toMatchObject({ dir: "rtl", rows: [{ text: BALANCE }] })
+    expect(layoutPhoneLine("\u202AMy account\u202C", 32)).toMatchObject({ dir: "ltr", rows: [{ text: "My account" }] })
   })
 
-  it("wraps a long line into separate rows", () => {
-    const line = "3. This week\u2019s offers and extra data bundles"
-    const layout = layoutPhoneLine(line, 16)
-    const texts = layout.rows.map((row) => row.map((unit) => unit.text).join(""))
-    expect(texts.length).toBeGreaterThan(1)
-    expect(texts.join("")).toBe(line)
-    expect(new Set(texts).size).toBe(texts.length)
-    for (const row of layout.rows) {
-      expect(row.reduce((total, unit) => total + unit.cols, 0)).toBeLessThanOrEqual(16)
-    }
+  it("uses the first strong character when there are no marks", () => {
+    expect(paragraphDirection(`${BALANCE} 1`)).toBe("rtl")
+    expect(paragraphDirection(`1. Balance ${BALANCE}`)).toBe("ltr")
+    expect(layoutPhoneLine(`99: ${BALANCE}`, 32).dir).toBe("rtl")
+  })
+
+  it("wraps at words and only cuts a word that is wider than the row", () => {
+    expect(wrapWords("3. This week's offers and extra data bundles", 16)).toEqual([
+      "3. This week's",
+      "offers and extra",
+      "data bundles",
+    ])
+    expect(wrapWords("abcdefghij xy", 4)).toEqual(["abcd", "efgh", "ij", "xy"])
+    const arabic = layoutPhoneLine("3. عروض هذا الأسبوع وباقات البيانات", 20, "rtl").rows.map((row) => row.text)
+    expect(arabic).toEqual(["3. عروض هذا الأسبوع", "وباقات البيانات"])
+    for (const row of arabic) expect(row.length).toBeLessThanOrEqual(20)
   })
 })

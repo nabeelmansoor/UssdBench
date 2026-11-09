@@ -3,26 +3,20 @@ import { PolicyArticle } from "@/components/tool-frame";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "How to reach the owner of USSD Bench.",
+  description: "How to reach Nabeel Mansoor, who maintains USSD Bench.",
 };
 
 export default function ContactPage() {
   return (
-    <PolicyArticle
-      title="Contact"
-      lede="The site is maintained by Nabeel Mansur Arif."
-    >
+    <PolicyArticle title="Contact" lede="USSD Bench is built and maintained by Nabeel Mansoor.">
       <p>
-        Write to{" "}
-        <a className="underline underline-offset-4" href="mailto:nabeel.mansurarif1@vodafone.qa">
-          nabeel.mansurarif1@vodafone.qa
-        </a>
-        . A useful note is a character the scanner missed, a page count that does not match a handset, or a line that
-        should have stayed in one piece.
+        Write to <a href="mailto:nabeel.mansoor@gmail.com">nabeel.mansoor@gmail.com</a>. Useful notes include a
+        character that was not replaced, an encoding that looks wrong for a language, a page count that does not match a
+        handset, or Arabic that shows in the wrong direction.
       </p>
       <p>
-        USSD Bench does not send the menu. Leave live customer text out of the email. Version 1 has no
-        message form, because a form would mean a server, and this version does not upload the menu.
+        There is no contact form, because a form would need a server and USSD Bench does not send anything you write.
+        Please leave live customer text out of the email.
       </p>
     </PolicyArticle>
   );
