@@ -123,7 +123,7 @@ export function PhonePreview({
                   The screen stays blank until there is text.
                 </p>
               ) : (
-                <div dir="ltr" className="font-mono text-[0.72rem] leading-snug sm:text-xs" style={{ width: `${width}ch` }}>
+                <div className="phone-text text-[0.72rem] leading-snug sm:text-xs" style={{ width: `${width}ch` }}>
                   {wrapped.map((line, index) =>
                     line.blank ? (
                       <div key={index} className="h-[1.35em]" />
@@ -131,21 +131,14 @@ export function PhonePreview({
                       line.rows.map((row, rowIndex) => (
                         <div
                           key={`${index}-${rowIndex}`}
-                          className="grid"
-                          dir="ltr"
-                          style={{ gridTemplateColumns: `repeat(${width}, 1ch)` }}
+                          dir={line.dir}
+                          className={cn(
+                            "overflow-hidden whitespace-pre",
+                            row.unsafe && "font-bold text-lcd-alert underline decoration-wavy",
+                          )}
+                          title={row.unsafe ? "Contains emoji, which is unsafe on a USSD handset." : undefined}
                         >
-                          {row.map((unit, unitIndex) => (
-                            <span
-                              key={unitIndex}
-                              dir="ltr"
-                              style={{ gridColumn: `${unit.column + 1} / span ${Math.max(1, unit.cols)}` }}
-                              className={unit.emoji ? "font-bold text-lcd-alert underline decoration-wavy" : undefined}
-                              title={unit.emoji ? "Unsafe on a USSD handset. Wider than one GSM character." : undefined}
-                            >
-                              {unit.text}
-                            </span>
-                          ))}
+                          {row.text}
                         </div>
                       ))
                     ),

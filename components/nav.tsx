@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { House, Lock, MessageSquareText, Moon, Rows3, Sun } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "cn"
-import { TOOLS } from "@/lib/tools"
+import { TAGLINE, TOOLS } from "@/lib/tools"
 import { useSession } from "@/lib/session"
 
 const ICONS: Record<string, LucideIcon> = {
@@ -39,7 +39,7 @@ function Wordmark({ compact = false }: { compact?: boolean }) {
           USSD Bench
         </span>
         <span className="mt-1.5 font-mono text-[0.65rem] tracking-[0.1em] text-sidebar-muted uppercase">
-          Menu and SMS workbench
+          {TAGLINE}
         </span>
       </span>
     </Link>
@@ -135,10 +135,58 @@ function SideLink({
   )
 }
 
+const STEP_ACTIVE: Record<(typeof TOOLS)[number]["section"], string> = {
+  ussd: "border-[#8c84ff] bg-[#3326d9] text-white",
+  sms: "border-[#3ddc84] bg-[#0b7a3d] text-white",
+}
+
+const STEP_RAIL: Record<(typeof TOOLS)[number]["section"], string> = {
+  ussd: "border-[#5247f0]",
+  sms: "border-[#179752]",
+}
+
+function StepSubmenu({ tool, onPage }: { tool: (typeof TOOLS)[number]; onPage: boolean }) {
+  const { state, updateUssd, updateSms } = useSession()
+  const current = tool.section === "ussd" ? state.ussd.step : state.sms.step
+  const select = (index: number) => {
+    if (tool.section === "ussd") updateUssd({ step: index })
+    else updateSms({ step: index })
+    window.scrollTo({ top: 0 })
+  }
+  return (
+    <ol aria-label={`${tool.title} steps`} className={cn("ml-5 flex flex-col gap-0.5 border-l-2 pl-2", STEP_RAIL[tool.section])}>
+      {tool.steps.map((step, index) => {
+        const active = onPage && index === current
+        return (
+          <li key={step.label}>
+            <Link
+              href={tool.href}
+              onClick={() => select(index)}
+              aria-current={active ? "step" : undefined}
+              className={cn(
+                "flex items-center gap-2 rounded border-[1.5px] px-1.5 py-1 text-[0.82rem] font-medium transition-colors focus-visible:outline-sidebar-ring",
+                active
+                  ? STEP_ACTIVE[tool.section]
+                  : "border-transparent text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-foreground",
+              )}
+            >
+              <span className="w-4 text-center font-mono text-[0.7rem] font-bold">{index + 1}</span>
+              <span className="flex-1">{step.label}</span>
+              {"optional" in step && step.optional ? (
+                <span className="font-mono text-[0.55rem] tracking-[0.1em] uppercase opacity-80">opt</span>
+              ) : null}
+            </Link>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
 export function Sidebar() {
   const pathname = usePathname()
   return (
-    <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col gap-6 border-r border-sidebar-border bg-sidebar px-4 py-6 text-sidebar-foreground lg:flex xl:w-64">
+    <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col gap-6 overflow-y-auto border-r border-sidebar-border bg-sidebar px-4 py-6 text-sidebar-foreground lg:flex xl:w-64">
       <Wordmark />
       <nav aria-label="Site" className="flex flex-col gap-1">
         <SideLink href="/" label="Home" active={pathname === "/"} badge={null} Icon={House} />
@@ -146,20 +194,22 @@ export function Sidebar() {
           Formatters
         </p>
         {TOOLS.map((tool) => (
-          <SideLink
-            key={tool.href}
-            href={tool.href}
-            label={tool.title}
-            active={pathname.startsWith(tool.href)}
-            badge={tool.key}
-            Icon={ICONS[tool.href]}
-          />
+          <div key={tool.href} className="flex flex-col gap-1">
+            <SideLink
+              href={tool.href}
+              label={tool.title}
+              active={pathname.startsWith(tool.href)}
+              badge={tool.key}
+              Icon={ICONS[tool.href]}
+            />
+            <StepSubmenu tool={tool} onPage={pathname.startsWith(tool.href)} />
+          </div>
         ))}
       </nav>
       <div className="mt-auto flex flex-col gap-3">
         <p className="flex items-start gap-2 px-2 text-xs leading-5 text-sidebar-muted">
           <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-          The menu never leaves this browser tab.
+          From Draft to Deployment: Perfect Your USSD Menus
         </p>
         <div className="border-t border-sidebar-border pt-3">
           <ThemeSwitch />

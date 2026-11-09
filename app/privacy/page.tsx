@@ -3,34 +3,33 @@ import { PolicyArticle } from "@/components/tool-frame";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "Version 1 keeps the pasted USSD or SMS text in the browser and does not upload it.",
+  description: "USSD Bench runs in your browser. The menus and messages you write are not sent anywhere.",
 };
 
 export default function PrivacyPage() {
   return (
     <PolicyArticle
       title="Privacy"
-      lede="The menu text stays in the browser. Version 1 does not upload it."
+      lede="Everything happens in your browser. Nothing you write is sent to a server."
     >
       <p>
-        Everything USSD Bench does runs on your device. The pasted menu, the page budget, the column width, the Next
-        and Back fields, and the light or dark theme are kept in this browser tab for the visit. Reloading the page
-        keeps them. Closing the tab clears them. They are not sent to a server, and there is no account to attach them
-        to.
+        The USSD and SMS formatters run entirely on your device. Character replacement, encoding detection, pagination,
+        direction marks, segment counts, and the phone preview are all computed in the page. No text is uploaded, logged,
+        or shared.
       </p>
       <p>
-        Copy places the text you asked for on the clipboard. That is the point of the session: you take the pages back
-        to your own gateway code. The clipboard is still on your machine. The marker labels in the character list are
-        not what the copy button writes. The button copies the real characters.
+        Your languages, menu and message text, the encoding and page settings, the Next and Back labels, the current
+        wizard step, the phone settings, and the theme are kept in this browser tab&apos;s session storage, so a reload
+        keeps your work. Closing the tab clears it. There is no account and nothing is saved on a server.
       </p>
       <p>
-        Ads are off, so this version does not load an advertising script and does not name an ad provider. If a later
-        version turns ads on, this page will name the provider. Overlay ads and sticky bars are not part of the tool
-        pages.
+        Copy buttons put the text you asked for on your clipboard, so you can take the pages or the message back to your
+        own gateway. The clipboard stays on your machine.
       </p>
       <p>
-        The site does not ask for a name, a phone number, or the contents of a live customer session. Do not paste a
-        menu here if your own rules say that text cannot sit in a browser tab.
+        The site does not use cookies for tracking, does not load advertising scripts, and does not ask for your name or
+        phone number. Fonts are served with the site itself. If your own rules say that live customer text cannot sit in
+        a browser tab, do not paste it here.
       </p>
     </PolicyArticle>
   );

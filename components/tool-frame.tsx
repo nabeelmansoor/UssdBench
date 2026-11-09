@@ -74,7 +74,7 @@ export function PolicyArticle({
       <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
       <div className="mt-4 h-1.5 w-16 bg-primary" aria-hidden="true" />
       <p className="mt-5 max-w-[64ch] text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{lede}</p>
-      <div className="prose-block mt-8 max-w-[68ch] [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4">
+      <div className="prose-block mt-8 max-w-[68ch] [&_h2]:pt-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:before:mr-2 [&_h2]:before:font-mono [&_h2]:before:text-primary [&_h2]:before:content-['//'] [&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4">
         {children}
       </div>
     </article>

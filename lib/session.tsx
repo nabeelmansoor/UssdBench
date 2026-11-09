@@ -43,7 +43,7 @@ export const PHONE_DEFAULT_COLUMNS: Record<PhoneKind, number> = { smartphone: 32
 export const PHONE_COLUMN_RANGE = { min: 8, max: 60 }
 
 export const DEFAULT_SESSION: SessionState = {
-  theme: "light",
+  theme: "dark",
   phone: { kind: "smartphone", smartphoneColumns: 32, featureColumns: 20 },
   ussd: {
     languages: [newUssdLanguage("en")],
@@ -117,7 +117,7 @@ function sanitize(raw: unknown): SessionState {
   const active = (list: { code: string }[], candidate: unknown) =>
     list.some((item) => item.code === candidate) ? (candidate as string) : list[0]!.code
   return {
-    theme: value.theme === "dark" ? "dark" : "light",
+    theme: value.theme === "light" ? "light" : "dark",
     phone: {
       kind: phone.kind === "feature" ? "feature" : "smartphone",
       smartphoneColumns: columns(phone.smartphoneColumns, PHONE_DEFAULT_COLUMNS.smartphone),

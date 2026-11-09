@@ -21,7 +21,7 @@ USSD specifics:
 - Alignment forces direction per page: RLE (U+202B) for right or LRE (U+202A) for left at the start of each page, PDF (U+202C) at the end. It only applies to UCS-2, and pagination counts both marks.
 - The phone follows whichever page you have scrolled to.
 
-SMS segments: GSM-7 160 / 153, Latin-1 (8-bit) 140 / 134, UCS-2 70 / 67. Light and dark themes. Ads are off.
+SMS segments: GSM-7 160 / 153, Latin-1 (8-bit) 140 / 134, UCS-2 70 / 67. Dark theme by default, with a light theme on the switch. Ads are off.
 
 ## Design: Short Code
 
@@ -44,9 +44,13 @@ Body copy, muted text, buttons, and the LCD pairs all meet WCAG AA contrast in b
 
 **Fonts** (loaded with `next/font/google` in `app/layout.tsx`): Bricolage Grotesque for the wordmark and headings, Instrument Sans for body copy, JetBrains Mono for menu text, counters, and labels.
 
-**Section bases.** Inside the Short Code identity, the USSD section uses an ultramarine base and the SMS section a green base, in both themes. They are set with `[data-section="ussd"]` and `[data-section="sms"]` blocks in `app/globals.css`, which retune `--primary`, `--secondary`, `--muted`, and the phone shell.
+**Section bases.** Inside the Short Code identity, the USSD section uses shades of ultramarine and the SMS section shades of green, in both themes: a tinted page wash, tinted panel headers with a section stripe, the step indicator, and the phone shell. They are set with `[data-section="ussd"]` and `[data-section="sms"]` blocks in `app/globals.css`.
 
-**Navigation.** On desktop (1024px and up) a fixed left rail holds the USSD Bench wordmark, a Home link, the two formatters as numbered keys (1 USSD formatter, 2 SMS formatter), and the dark-mode switch. The active page is a filled lime key with `aria-current="page"`. On mobile there is a slim top bar (wordmark and theme switch) and a three-tab bottom bar (Home, USSD, SMS).
+**Non-Latin text.** JetBrains Mono has no Arabic or Devanagari glyphs, so menu text and the phone fall back to Noto Kufi Arabic and Noto Sans Devanagari. The phone draws each row as one run of text, so Arabic shapes and joins and the browser applies the page direction.
+
+**Icons.** `app/favicon.ico`, `app/icon.svg`, `app/icon.png`, and `app/apple-icon.png` are the `*#` key, picked up by Next's icon file conventions.
+
+**Navigation.** On desktop (1024px and up) a fixed left rail holds the USSD Bench wordmark, a Home link, the two formatters as numbered keys (1 USSD formatter, 2 SMS formatter) with each wizard's steps as a submenu (the current step is highlighted and every step is clickable), and the dark-mode switch. The active page is a filled lime key with `aria-current="page"`. On mobile there is a slim top bar (wordmark and theme switch) and a three-tab bottom bar (Home, USSD, SMS).
 
 **Page chrome.** Steps are flat "panels" with a mono title strip, not nested cards. Languages are tabs. Pagination, Alignment, and Segments are two columns with a sticky phone on the right. Home pairs a typographic headline and an LCD limits readout with the two formatters.
 

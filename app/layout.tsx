@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Instrument_Sans,
+  JetBrains_Mono,
+  Noto_Kufi_Arabic,
+  Noto_Sans_Devanagari,
+} from "next/font/google";
 import { BottomNav, MobileTopBar, Sidebar } from "@/components/nav";
 import { Footer } from "@/components/site-footer";
 import { SessionProvider } from "@/lib/session";
@@ -21,6 +27,17 @@ const code = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+// JetBrains Mono has no Arabic or Devanagari glyphs. The mono stack in globals.css falls through to these.
+const arabic = Noto_Kufi_Arabic({
+  variable: "--font-arabic",
+  subsets: ["arabic"],
+});
+
+const devanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari"],
+});
+
 export const metadata: Metadata = {
   title: {
     default: "USSD Bench",
@@ -34,7 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${display.variable} ${body.variable} ${code.variable} h-full antialiased`}
+      className={`dark ${display.variable} ${body.variable} ${code.variable} ${arabic.variable} ${devanagari.variable} h-full antialiased`}
+      style={{ colorScheme: "dark" }}
       suppressHydrationWarning
     >
       <body className="min-h-full bg-background text-foreground">
