@@ -24,15 +24,15 @@ export default function AboutPage() {
         encoding, the segment count, and the character that made a GSM message into a Unicode message.
       </p>
       <p>
-        Version 1 is one screen at a time. You leave with pages you can copy into your own application, and with a list
-        of the problems in the paste. It does not upload the menu. It does not keep an account, a menu tree, or a
-        library of other operator presets. It does not price a message, add a STOP footer, or apply a national language
+        It works on one screen at a time, in as many languages as you need. You leave with pages you can copy into your
+        own application, and with a list of the problems in the paste. It does not upload the menu. It does not keep an
+        account, a menu tree, or a library of operator presets. It does not price a message, add a STOP footer, or apply a national language
         shift table. Ads are off.
       </p>
       <p>
-        The sample menu is English. Mixed Arabic is something you type or paste, then force with a direction mark on
-        the line that needs it. The default network label is Vodafone Qatar, on the 160-octet USSD ceiling, because
-        that operator does not publish a different menu cap.
+        Each formatter is a short wizard with one tab per language. The USSD pages start from the 160-octet USSD
+        ceiling: 182 GSM-7 septets, 160 Latin-1 characters, or 80 UCS-2 characters. Arabic and other right-to-left
+        pages can be forced right to left with one direction mark per page.
       </p>
     </PolicyArticle>
   );

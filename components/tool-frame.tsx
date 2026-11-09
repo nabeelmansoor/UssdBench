@@ -1,27 +1,11 @@
 import { cn } from "cn"
-import { TOOLS } from "@/lib/tools"
 
 export const actionButtonClass = "h-11 w-full sm:w-auto"
 
-export function ToolIntro({ title, lede }: { title: string; lede: string }) {
-  const tool = TOOLS.find((entry) => title.startsWith(entry.label))
-  return (
-    <header className="container-page pt-8 lg:pt-12">
-      <div className="flex items-center gap-3">
-        {tool ? <span className="key-chip">{tool.key}</span> : null}
-        <p className="kicker">{tool ? `${tool.group} tool` : "Tool"}</p>
-      </div>
-      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">{title}</h1>
-      <div className="mt-4 h-1.5 w-16 bg-primary" aria-hidden="true" />
-      <p className="mt-5 max-w-[64ch] text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{lede}</p>
-    </header>
-  )
-}
-
-export function ToolCanvas({ children }: { children: React.ReactNode }) {
+export function ToolCanvas({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
   return (
     <div className="container-page mt-8">
-      <div className="flex max-w-4xl flex-col gap-5">{children}</div>
+      <div className={cn("flex flex-col gap-5", wide ? "max-w-5xl" : "max-w-4xl")}>{children}</div>
     </div>
   )
 }

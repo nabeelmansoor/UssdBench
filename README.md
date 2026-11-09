@@ -2,14 +2,26 @@
 
 USSD Bench is a browser tool for one USSD screen at a time. Paste a menu, fit it to an octet budget, clean characters that break a gateway, align it to a phone width, and count SMS segments. The menu text stays in the browser. It is not uploaded.
 
-Version 1 includes:
+USSD Bench has two separate sections, each a step-by-step wizard with Next and Back and a step indicator:
 
-- Pagination with and without Next and Back, on a 160-octet budget (182 GSM septets or 80 UCS-2 characters). The named preset is Vodafone Qatar at that same 160 octets.
-- A shared phone width for Paginate and Align: 16–24 columns for a feature phone, 30–40 and above for a smartphone.
-- Left, center, and right padding, and one right-to-left or left-to-right mark pair per line.
-- A character scan for special spaces, invisibles, smart punctuation, fullwidth lookalikes, and anything outside GSM 7-bit.
-- SMS segment counts for GSM 7-bit (160 / 153, extension characters at two septets) and UCS-2 (70 / 67).
-- Light and dark themes. Ads are off.
+- **USSD formatter** (ultramarine): Input, Encoding, Pagination, Alignment, and an optional Character Review.
+- **SMS formatter** (green): Input, Encoding, and Segments with a preview.
+
+What both sections share:
+
+- A language picker: English, Arabic, French, Spanish, Urdu, and Hindi are one-click chips, and a searchable list covers every other ISO 639-1 language. Each selected language is its own menu, on its own tab.
+- Smart characters (curly quotes, en and em dashes, ellipses, no-break and other special spaces, zero-width characters) are replaced automatically with their GSM-7, Latin-1, or UCS-2 equivalent, and every replacement is highlighted.
+- The encoding (GSM-7, Latin-1, or UCS-2) is detected per language and can be overridden.
+- A phone preview with a Smartphone / Feature phone switch and an editable column count on the phone itself (defaults 32 and 20).
+
+USSD specifics:
+
+- Characters per Page defaults to the language's encoding: 182 for GSM-7, 160 for Latin-1, 80 for UCS-2.
+- Reply key and label for Next and Back are set per language. Pagination is by word or by line; in line mode a line longer than a page is split at a word.
+- Alignment forces direction per page: RLE (U+202B) for right or LRE (U+202A) for left at the start of each page, PDF (U+202C) at the end. It only applies to UCS-2, and pagination counts both marks.
+- The phone follows whichever page you have scrolled to.
+
+SMS segments: GSM-7 160 / 153, Latin-1 (8-bit) 140 / 134, UCS-2 70 / 67. Light and dark themes. Ads are off.
 
 ## Design: Short Code
 
@@ -32,9 +44,11 @@ Body copy, muted text, buttons, and the LCD pairs all meet WCAG AA contrast in b
 
 **Fonts** (loaded with `next/font/google` in `app/layout.tsx`): Bricolage Grotesque for the wordmark and headings, Instrument Sans for body copy, JetBrains Mono for menu text, counters, and labels.
 
-**Navigation.** On desktop (1024px and up) a fixed left rail holds the USSD Bench wordmark, a Home link, the four tools as numbered keys (1 Paginate, 2 Align, 3 Characters, 4 SMS), and the dark-mode switch. The active page is a filled lime key with `aria-current="page"`. On mobile there is a slim top bar (wordmark and theme switch) and a five-tab bottom bar (Home, Paginate, Align, Characters, SMS).
+**Section bases.** Inside the Short Code identity, the USSD section uses an ultramarine base and the SMS section a green base, in both themes. They are set with `[data-section="ussd"]` and `[data-section="sms"]` blocks in `app/globals.css`, which retune `--primary`, `--secondary`, `--muted`, and the phone shell.
 
-**Page chrome.** Tools are flat "panels" with a mono title strip, not nested cards. Paginate and Align are two columns with a sticky phone on the right; the buffer actions sit directly under the textarea. Home pairs a typographic headline and an LCD limits readout with the shared buffer and a numbered tool menu.
+**Navigation.** On desktop (1024px and up) a fixed left rail holds the USSD Bench wordmark, a Home link, the two formatters as numbered keys (1 USSD formatter, 2 SMS formatter), and the dark-mode switch. The active page is a filled lime key with `aria-current="page"`. On mobile there is a slim top bar (wordmark and theme switch) and a three-tab bottom bar (Home, USSD, SMS).
+
+**Page chrome.** Steps are flat "panels" with a mono title strip, not nested cards. Languages are tabs. Pagination, Alignment, and Segments are two columns with a sticky phone on the right. Home pairs a typographic headline and an LCD limits readout with the two formatters.
 
 ## Run it locally
 
@@ -50,4 +64,4 @@ npm test
 npm run lint
 ```
 
-`npm test` runs the unit tests for GSM packing, display width, pagination, cleanup, and SMS segments.
+`npm test` runs the unit tests for encoding detection, smart-character replacement, characters per page, word and line pagination, per-page direction marks, SMS segments, display width, and phone bidi.
