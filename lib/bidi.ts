@@ -60,8 +60,8 @@ function coalesce(row: WidthUnit[]): WidthUnit[] {
 }
 
 /** Wrap a line to the phone width, then apply the Unicode bidi algorithm to each row. */
-export function layoutPhoneLine(line: string, width: number): PhoneLineLayout {
-  const base = phoneBaseDirection(line)
+export function layoutPhoneLine(line: string, width: number, pageBase: PhoneDirection = "auto"): PhoneLineLayout {
+  const base = pageBase === "auto" ? phoneBaseDirection(line) : pageBase
   const align = base === "rtl" ? "right" : "left"
   const shown = stripDirectionMarks(line)
   const columns = displayColumns(shown)

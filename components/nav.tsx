@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { AlignLeft, House, Lock, MessageSquareText, Moon, Rows3, ScanSearch, Sun } from "lucide-react"
+import { House, Lock, MessageSquareText, Moon, Rows3, Sun } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "cn"
 import { TOOLS } from "@/lib/tools"
@@ -10,9 +10,7 @@ import { useSession } from "@/lib/session"
 
 const ICONS: Record<string, LucideIcon> = {
   "/": House,
-  "/ussd/paginate": Rows3,
-  "/ussd/align": AlignLeft,
-  "/ussd/characters": ScanSearch,
+  "/ussd": Rows3,
   "/sms": MessageSquareText,
 }
 
@@ -49,7 +47,7 @@ function Wordmark({ compact = false }: { compact?: boolean }) {
 }
 
 export function ThemeSwitch({ className, showLabel = true }: { className?: string; showLabel?: boolean }) {
-  const { state, update } = useSession()
+  const { state, setTheme } = useSession()
   const dark = state.theme === "dark"
   return (
     <button
@@ -57,7 +55,7 @@ export function ThemeSwitch({ className, showLabel = true }: { className?: strin
       role="switch"
       aria-checked={dark}
       aria-label="Dark mode"
-      onClick={() => update({ theme: dark ? "light" : "dark" })}
+      onClick={() => setTheme(dark ? "light" : "dark")}
       className={cn(
         "flex items-center gap-3 rounded-md px-2 py-2 text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent focus-visible:outline-sidebar-ring",
         className,
@@ -145,14 +143,14 @@ export function Sidebar() {
       <nav aria-label="Site" className="flex flex-col gap-1">
         <SideLink href="/" label="Home" active={pathname === "/"} badge={null} Icon={House} />
         <p className="mt-4 mb-1 px-2 font-mono text-[0.65rem] font-semibold tracking-[0.14em] text-sidebar-muted uppercase">
-          Tools
+          Formatters
         </p>
         {TOOLS.map((tool) => (
           <SideLink
             key={tool.href}
             href={tool.href}
-            label={tool.label}
-            active={pathname === tool.href}
+            label={tool.title}
+            active={pathname.startsWith(tool.href)}
             badge={tool.key}
             Icon={ICONS[tool.href]}
           />
@@ -189,10 +187,10 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Site"
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t-[1.5px] border-sidebar-primary bg-sidebar lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t-[1.5px] border-sidebar-primary bg-sidebar lg:hidden"
     >
       {items.map((item) => {
-        const active = pathname === item.href
+        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
         const Icon = ICONS[item.href]
         return (
           <Link

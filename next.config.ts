@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   cacheComponents: true,
   partialPrefetching: true,
+  redirects() {
+    return ["paginate", "align", "characters"].map((tool) => ({
+      source: `/ussd/${tool}`,
+      destination: "/ussd",
+      permanent: true,
+    }));
+  },
   turbopack: {
     rules: {
       "*.css": {

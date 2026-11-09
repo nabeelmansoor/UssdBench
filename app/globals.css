@@ -163,6 +163,55 @@
   --sidebar-border: #20255a;
 }
 
+/*
+ * Section bases. USSD pages are ultramarine and SMS pages are green, in both themes.
+ * Everything else (paper, ink, lime signal, hard shadows, LCD) stays Short Code.
+ */
+[data-section="ussd"] {
+  --primary: #3326d9;
+  --primary-foreground: #ffffff;
+  --ring: #3326d9;
+  --secondary: #e6e8f7;
+  --muted: #eceef9;
+  --phone: #3326d9;
+  --phone-key: #5247f0;
+  --section-wash: #e9e7ff;
+}
+.dark [data-section="ussd"] {
+  --primary: #8c84ff;
+  --primary-foreground: #0c0f24;
+  --ring: #8c84ff;
+  --secondary: #1c2048;
+  --muted: #171a38;
+  --accent: #c8f03c;
+  --phone: #241f8f;
+  --phone-key: #3a33b8;
+  --section-wash: #1a1850;
+}
+[data-section="sms"] {
+  --primary: #0b7a3d;
+  --primary-foreground: #ffffff;
+  --ring: #0b7a3d;
+  --secondary: #e3f3e9;
+  --muted: #eaf5ee;
+  --border: #c2dccb;
+  --phone: #0b7a3d;
+  --phone-key: #179752;
+  --section-wash: #dcf5e5;
+}
+.dark [data-section="sms"] {
+  --primary: #3ddc84;
+  --primary-foreground: #04140b;
+  --ring: #3ddc84;
+  --secondary: #12301f;
+  --muted: #10261a;
+  --border: #1f4a32;
+  --accent: #c8f03c;
+  --phone: #0f3a22;
+  --phone-key: #1a5634;
+  --section-wash: #0f2a1b;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -207,7 +256,7 @@
     @apply overflow-hidden rounded-lg border-[1.5px] border-line bg-card text-card-foreground;
   }
   .panel-head {
-    @apply flex items-center justify-between gap-3 border-b-[1.5px] border-line bg-secondary px-4 py-2 font-mono text-xs font-semibold tracking-[0.08em] text-secondary-foreground uppercase;
+    @apply flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b-[1.5px] border-line bg-secondary px-4 py-2 font-mono text-xs font-semibold tracking-[0.08em] text-secondary-foreground uppercase;
   }
   .panel-body {
     @apply grid gap-4 p-4 sm:p-5;
