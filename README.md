@@ -69,3 +69,9 @@ npm run lint
 ```
 
 `npm test` runs the unit tests for encoding detection, smart-character replacement, characters per page, word and line pagination, per-page direction marks, SMS segments, display width, and phone bidi.
+
+## Deploy
+
+`npm run build` writes a static site to `out/` (`output: "export"`); there is no server. It is hosted on Cloudflare Pages' free plan, which builds every push to `main` and gives each pull request a preview link. [docs/deploy-cloudflare.md](docs/deploy-cloudflare.md) walks through the setup in the Cloudflare dashboard, with no local tools needed.
+
+Cloudflare build settings: build command `npm run build`, output directory `out`, environment variable `NODE_VERSION=22`. Redirects and response headers are in `public/_redirects` and `public/_headers`. `npm start` serves `out/` locally with Wrangler's Pages server so those files apply.

@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects. The old per-tool USSD pages are now steps of the /ussd wizard.
+/ussd/paginate    /ussd  301
+/ussd/paginate/   /ussd  301
+/ussd/align       /ussd  301
+/ussd/align/      /ussd  301
+/ussd/characters  /ussd  301
+/ussd/characters/ /ussd  301
