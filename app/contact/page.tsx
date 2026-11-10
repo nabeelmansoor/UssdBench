@@ -4,6 +4,7 @@ import { PolicyArticle } from "@/components/tool-frame";
 export const metadata: Metadata = {
   title: "Contact",
   description: "How to reach Nabeel Mansoor, who maintains USSD Bench.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

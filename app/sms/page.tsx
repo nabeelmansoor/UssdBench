@@ -5,6 +5,7 @@ import { Explainer } from "@/components/tool-frame";
 export const metadata: Metadata = {
   title: "SMS formatter",
   description: "Format an SMS per language: smart-character cleanup, GSM-7, Latin-1 or UCS-2, and segment counts.",
+  alternates: { canonical: "/sms" },
 };
 
 export default function SmsPage() {

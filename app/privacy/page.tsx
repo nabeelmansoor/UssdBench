@@ -4,6 +4,7 @@ import { PolicyArticle } from "@/components/tool-frame";
 export const metadata: Metadata = {
   title: "Privacy",
   description: "USSD Bench runs in your browser. The menus and messages you write are not sent anywhere.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

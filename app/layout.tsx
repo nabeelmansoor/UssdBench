@@ -9,6 +9,7 @@ import {
 import { BottomNav, MobileTopBar, Sidebar } from "@/components/nav";
 import { Footer } from "@/components/site-footer";
 import { SessionProvider } from "@/lib/session";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -39,6 +40,7 @@ const devanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "USSD Bench",
     template: "%s · USSD Bench",

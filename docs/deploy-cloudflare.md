@@ -89,6 +89,8 @@ To roll back, open the project's **Deployments** tab, pick an older production d
 
 The `*.pages.dev` address keeps working alongside the custom domain.
 
+The sitemap, `robots.txt`, and each page's canonical link use `https://ussdbench.pages.dev` by default. To point them at the custom domain, add a build variable `NEXT_PUBLIC_SITE_URL` (for example `https://ussd.example.com`) under **Settings** > **Variables and Secrets**, then **Retry deployment**.
+
 ## Free plan limits
 
 These are far above what USSD Bench needs:
