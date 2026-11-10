@@ -5,3 +5,7 @@
 /ussd/align/      /ussd  301
 /ussd/characters  /ussd  301
 /ussd/characters/ /ussd  301
+
+# Google Search Console HTML-file verification. A 200 rewrite skips the .html to extensionless 308 redirect,
+# because Google expects the file at its exact .html URL.
+/google13827e30848e7529.html  /google13827e30848e7529  200
