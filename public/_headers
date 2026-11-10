@@ -12,3 +12,7 @@
 # Next puts a content hash in every file name under _next/static, so a file there never changes.
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Plain-text Google verification file: no page resources, so the CSP is dropped to keep the response bare.
+/google13827e30848e7529.html
+  ! Content-Security-Policy
