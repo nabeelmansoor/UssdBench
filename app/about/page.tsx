@@ -5,6 +5,7 @@ import { PolicyArticle } from "@/components/tool-frame";
 export const metadata: Metadata = {
   title: "About",
   description: "What USSD Bench does: step-wise USSD and SMS formatters that run entirely in your browser.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

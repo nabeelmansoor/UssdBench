@@ -5,6 +5,7 @@ import { Explainer } from "@/components/tool-frame";
 export const metadata: Metadata = {
   description:
     "Format USSD menus and SMS per language: smart-character cleanup, GSM-7, Latin-1 or UCS-2, pages, direction, and segments.",
+  alternates: { canonical: "/" },
 };
 
 export default function HomePage() {

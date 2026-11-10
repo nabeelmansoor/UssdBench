@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "USSD formatter",
   description:
     "Format a USSD menu per language: smart-character cleanup, GSM-7, Latin-1 or UCS-2, pages that fit, and forced direction.",
+  alternates: { canonical: "/ussd" },
 };
 
 export default function UssdPage() {
